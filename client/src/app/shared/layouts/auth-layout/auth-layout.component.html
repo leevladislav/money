@@ -1,0 +1,20 @@
+<div class="auth-layout">
+  <div class="layout-item item-header">
+    <a routerLink="/" class="logo">Money</a>
+    <ul>
+      <li routerLinkActive="active">
+        <a routerLink="/login">Log in</a>
+      </li>
+
+      <li routerLinkActive="active">
+        <a routerLink="/register">Sign up</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="layout-item item-body">
+    <div class="auth-form">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

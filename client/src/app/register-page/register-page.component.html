@@ -1,0 +1,26 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="form-layout">
+    <p class="title">Sign up</p>
+
+    <div class="form-body">
+      <mat-form-field>
+        <input matInput placeholder="Email:" formControlName="email" required>
+        <mat-error>
+          <app-validator-message [field]="form.get('email')"></app-validator-message>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Password:" formControlName="password" required>
+        <mat-error>
+          <app-validator-message [field]="form.get('password')"></app-validator-message>
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-footer">
+      <button mat-raised-button color="primary"
+              [disabled]="form.invalid || form.disabled" type="submit">Submit</button>
+    </div>
+  </div>
+</form>

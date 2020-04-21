@@ -1,0 +1,11 @@
+.mat-drawer-container {
+  min-height: 100vh;
+
+  .mat-drawer-side {
+    min-width: 250px;
+  }
+
+  .mat-drawer-content {
+    padding: 20px;
+  }
+}

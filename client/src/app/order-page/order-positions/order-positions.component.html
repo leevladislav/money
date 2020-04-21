@@ -1,0 +1,29 @@
+<div *ngIf="positions$ | async as positions; else loader">
+  <div *ngIf="positions.length !==0; else empty" class="card-list-layout">
+    <div class="layout-item" *ngFor="let position of positions">
+      <div class="img-wrapper">
+
+      </div>
+      <p class="title">{{position.name}}</p>
+
+      <p class="cost">{{position.cost}} UAH.</p>
+
+      <div class="action-wrapper">
+        <button mat-raised-button color="primary"
+                (click)="addToOrder(position)"
+                [disabled]="!position.quantity">Order
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #empty>
+    <div class="center">
+      Product list is empty
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #loader>
+  <app-loader></app-loader>
+</ng-template>

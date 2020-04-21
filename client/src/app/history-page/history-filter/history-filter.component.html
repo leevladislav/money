@@ -1,0 +1,28 @@
+<div class="filter-layout">
+  <mat-form-field>
+    <input matInput type="number" min="1" placeholder="Order number" [(ngModel)]="order">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput [matDatepicker]="pickerFrom" readonly
+           placeholder="Date start" (click)="pickerFrom.open()"
+           [min]="minDateFrom" [max]="maxDateFrom"
+           (dateChange)="dateChanged($event.value, '')">
+    <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+    <mat-datepicker #pickerFrom></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput [matDatepicker]="pickerTo" readonly
+           placeholder="Date end" (click)="pickerTo.open()"
+           [min]="minDateTo" [max]="maxDateTo"
+           (dateChange)="dateChanged('', $event.value)">
+    <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+    <mat-datepicker #pickerTo></mat-datepicker>
+  </mat-form-field>
+
+  <button mat-stroked-button color="primary"
+          (click)="submitFilter()">
+    <mat-icon>filter_list</mat-icon>
+  </button>
+</div>

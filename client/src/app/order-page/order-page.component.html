@@ -1,0 +1,17 @@
+<app-back-btn *ngIf="!isRoot"></app-back-btn>
+
+<div class="page-title">
+  <p *ngIf="isRoot">Order</p>
+  <p *ngIf="!isRoot">
+    <a [routerLink]="['/order']">Order</a>
+    <mat-icon>keyboard_arrow_right</mat-icon>
+    Add Order
+  </p>
+
+  <button mat-raised-button color="primary"
+          [routerLink]="['cart']">
+    <mat-icon>shopping_cart</mat-icon>
+  </button>
+</div>
+
+<router-outlet></router-outlet>

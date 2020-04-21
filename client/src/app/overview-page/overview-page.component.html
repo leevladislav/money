@@ -1,0 +1,57 @@
+<div class="page-title">
+  <p>Yesterday review {{yesterday | date: 'dd.MM.yyyy'}}</p>
+</div>
+
+<div class="overview-layout" *ngIf="data$ | async as data; else loader">
+  <div class="layout-item">
+    <span class="title">Выручка:</span>
+
+    <p class="subtitle">{{data.gain.yesterday}} UAH.</p>
+
+    <p class="status"
+       [ngClass]="{
+            'good': data.gain.isHigher,
+            'bad': !data.gain.isHigher
+            }">
+      <mat-icon>{{data.gain.isHigher ? 'arrow_upward' : 'arrow_downward'}}</mat-icon>
+      {{data.gain.percent}}%
+    </p>
+
+    <p class="info">
+      Выручка вашего бизнеса вчера на
+      {{data.gain.percent}}% {{data.gain.isHigher ? 'выше' : 'ниже'}}
+      среднего: {{data.gain.compare}} UAH. в день
+    </p>
+  </div>
+
+  <div class="layout-item">
+    <span class="title">Заказы:</span>
+
+    <p class="subtitle">{{data.orders.yesterday}} зак.</p>
+
+    <p class="status"
+       [ngClass]="{
+            'good': data.orders.isHigher,
+            'bad': !data.orders.isHigher
+            }">
+      <mat-icon>{{data.orders.isHigher ? 'arrow_upward' : 'arrow_downward'}}</mat-icon>
+      {{data.orders.percent}}%
+    </p>
+
+    <p class="info">
+      Число заказов вчера на
+      {{data.orders.percent}}% {{data.orders.isHigher ? 'выше' : 'ниже'}}
+      среднего значения: {{data.orders.compare}} зак. в день
+    </p>
+  </div>
+
+  <div class="layout-item page-info">
+    <p><b>Зачем нужна эта страница?</b></p>
+    <p>Страница “Обзор” покажет динамику продаж за предыдущий день. Сравнение со средним значениями поможет вам понять,
+      как идут дела у Вашего бизнеса.</p>
+  </div>
+</div>
+
+<ng-template #loader>
+  <app-loader></app-loader>
+</ng-template>

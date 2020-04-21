@@ -1,0 +1,15 @@
+<app-modal-header [title]="data.title"></app-modal-header>
+
+<div class="dialog-content">
+  <p class="text-center">{{data.type}}</p>
+
+  <mat-dialog-actions align="center">
+    <button mat-raised-button [mat-dialog-close]="false">
+      Cancel
+    </button>
+
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">
+      {{data.buttonText ? data.buttonText : 'Yes'}}
+    </button>
+  </mat-dialog-actions>
+</div>

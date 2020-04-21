@@ -1,0 +1,42 @@
+<div class="orders" *ngIf="order.list.length; else empty">
+  <p class="title">Your order</p>
+
+  <div class="orders-list">
+    <div class="list-heading">
+      <p class="name">Название</p>
+      <p class="quantity">Количество</p>
+      <p class="cost">Цена</p>
+    </div>
+
+    <div class="list-items">
+      <div *ngFor="let item of order.list" class="order-item">
+        <p class="name">{{item.name}}</p>
+
+        <p class="quantity">{{item.quantity}}</p>
+
+        <p class="cost">{{item.cost}} UAH.</p>
+
+        <div class="remove">
+          <button mat-button color="primary"(click)="removePosition(item)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="list-summary">
+      <p>Total cost: {{order.price}} UAH.</p>
+    </div>
+  </div>
+
+  <div class="orders-footer">
+    <button mat-raised-button color="primary"
+            [disabled]="order.list.length === 0 || pending"
+            (click)="submit()">Submit
+    </button>
+  </div>
+</div>
+
+<ng-template #empty>
+  <div class="center">Your cart is empty now</div>
+</ng-template>

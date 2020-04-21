@@ -1,0 +1,46 @@
+<app-back-btn></app-back-btn>
+
+<div class="page-title">
+  <p>
+    <a [routerLink]="'/categories'">Categories</a>
+    <mat-icon>keyboard_arrow_right</mat-icon>
+    {{isNew ? 'Create' : 'Edit'}} category
+  </p>
+
+  <span>
+    <button mat-stroked-button *ngIf="!isNew" (click)="deleteCategory()">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </span>
+</div>
+
+<div class="category-layout">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <input matInput placeholder="Category name:" formControlName="name" required>
+      <mat-error>
+        <app-validator-message [field]="form.get('name')"></app-validator-message>
+      </mat-error>
+    </mat-form-field>
+
+    <div class="upload-wrapper">
+      <input type="file" name="file" id="file" class="input-file"
+             #input (change)="onFileUpload($event)">
+
+      <button (click)="triggerClick()" [disabled]="form.disabled"
+              type="button" mat-raised-button class="btn-upload">
+        <mat-icon>backup</mat-icon> Upload image
+      </button>
+
+      <button [disabled]="form.invalid || form.disabled" type="submit" mat-raised-button color="primary">
+        Save Category
+      </button>
+    </div>
+  </form>
+
+  <div class="layout-item item-img">
+    <img [src]="imagePreview" *ngIf="imagePreview" alt="category image">
+  </div>
+</div>
+
+<app-positions-list *ngIf="category?._id" [categoryId]="category._id"></app-positions-list>

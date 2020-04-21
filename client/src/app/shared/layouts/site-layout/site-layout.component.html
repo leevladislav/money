@@ -1,0 +1,19 @@
+<mat-drawer-container class="example-container">
+  <mat-drawer mode="side" opened>
+    <div class="side-bar-layout">
+      <ul>
+        <li><p class="title">Admin</p></li>
+
+        <li *ngFor="let link of links" routerLinkActive="active">
+          <a [routerLink]="[link.url]">{{link.name}}</a>
+        </li>
+      </ul>
+
+      <button mat-raised-button color="accent" (click)="logout($event)">Log out</button>
+    </div>
+  </mat-drawer>
+
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>

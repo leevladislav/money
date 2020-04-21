@@ -1,0 +1,35 @@
+<div class="page-title">
+  <p>Products all:</p>
+  <button mat-raised-button color="primary" [routerLink]="['position/create']">
+    Add product
+  </button>
+</div>
+
+<div *ngIf="!loading; else loader">
+  <div class="card-list-layout" *ngIf="positions.length !== 0; else empty">
+    <a *ngFor="let position of positions" [routerLink]="['position', position._id, 'edit']"
+       class="layout-item">
+
+      <div class="img-wrapper">
+
+      </div>
+
+      <p class="title">{{position.name}} <strong> - {{position.cost}} UAH</strong></p>
+
+      <span class="action-wrapper">
+        <button mat-stroked-button (click)="onDeletePosition($event, position)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </span>
+    </a>
+  </div>
+
+  <ng-template #empty>
+    <div class="center">Anyone position in category</div>
+  </ng-template>
+</div>
+
+<ng-template #loader>
+  <app-loader></app-loader>
+</ng-template>
+
