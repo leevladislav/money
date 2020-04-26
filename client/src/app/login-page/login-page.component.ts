@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../shared/services/auth.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {MaterialService} from '../shared/classes/material.service';
 import {ModalInfoComponent} from '../entry-components/modal-info/modal-info.component';
 import {MatDialog} from '@angular/material/dialog';
 import {untilDestroyed} from 'ngx-take-until-destroy';
@@ -33,12 +32,12 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.route.queryParams
       .pipe(untilDestroyed(this))
       .subscribe((params: Params) => {
-        if (params['registered']) {
-          MaterialService.toast('Registration success');
-        } else if (params['accessDenied']) {
-          MaterialService.toast('At first you have to registration');
-        } else if (params['sessionFailed']) {
-          MaterialService.toast('Please, login system back');
+        if (params.registered) {
+          console.log('Registration success');
+        } else if (params.accessDenied) {
+          console.log('At first you have to registration');
+        } else if (params.sessionFailed) {
+          console.log('Please, login system back');
         }
       });
   }
@@ -55,7 +54,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.auth.login(data)
       .pipe(untilDestroyed(this))
       .subscribe(
-        () => this.router.navigate(['/overview']),
+        () => this.router.navigate(['/home']),
         (error) => {
           this.dialog.open(ModalInfoComponent, {
             data: {

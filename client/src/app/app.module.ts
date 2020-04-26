@@ -15,6 +15,7 @@ import {ModalInfoComponent} from './entry-components/modal-info/modal-info.compo
 import {ModalConfirmComponent} from './entry-components/modal-confirm/modal-confirm.component';
 import {ModalCropComponent} from './entry-components/modal-crop/modal-crop.component';
 import {ImageCropperModule} from 'ngx-image-cropper';
+import {HeaderComponent} from './shared/layouts/site-layout/header/header.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {ImageCropperModule} from 'ngx-image-cropper';
     ModalInfoComponent,
     ModalConfirmComponent,
     ModalCropComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

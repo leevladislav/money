@@ -1,0 +1,40 @@
+@import "../../../../../styles/variables";
+
+.header-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: $border;
+  padding: 10px 20px;
+
+  @media screen and (max-width: 768px) {
+    padding: 6px 12px;
+  }
+
+  .item-toggle-sidenav {
+    padding-right: 20px;
+    border-right: $border;
+  }
+
+  .item-money {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+
+    > div {
+      padding: 0 10px;
+      flex-grow: 1;
+      text-align: center;
+
+      p {
+        color: $muted-color;
+        margin: 0 0 6px;
+      }
+    }
+  }
+
+  .item-add-money {
+    padding-left: 20px;
+    border-left: $border;
+  }
+}

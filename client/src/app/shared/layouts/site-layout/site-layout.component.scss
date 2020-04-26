@@ -35,3 +35,13 @@
     margin: 0 auto 20px;
   }
 }
+
+.mat-drawer-container {
+  .mat-drawer-content {
+    padding: 0;
+
+    .container {
+      padding: 20px;
+    }
+  }
+}

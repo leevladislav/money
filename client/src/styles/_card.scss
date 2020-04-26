@@ -1,7 +1,6 @@
 .card-list-layout {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: stretch;
   flex-wrap: wrap;
   margin: 0 -15px;
 
@@ -9,21 +8,28 @@
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    width: calc(30% - 30px);
-    padding: 0;
     overflow: hidden;
     margin: 15px;
     background-color: transparent;
     border: $border;
     border-radius: $border-radius;
-    min-width: 300px;
-    max-width: 30%;
+    max-width: calc(25% - 30px);
+    width: 100%;
+    min-height: 280px;
     box-shadow: $primary-box-shadow;
+    align-items: center;
+    justify-content: center;
+    min-width: 250px;
   }
 
   .img-wrapper {
-    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    width: 100%;
+    border-top: $border;
+    border-bottom: $border;
 
     img {
       object-fit: cover;
@@ -33,9 +39,11 @@
   }
 
   .title,
+  .budget,
   .cost {
     padding: 10px 20px;
     margin: 0;
+    text-align: center;
   }
 
   .action-wrapper {

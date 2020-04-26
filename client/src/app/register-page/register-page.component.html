@@ -4,6 +4,13 @@
 
     <div class="form-body">
       <mat-form-field>
+        <input matInput placeholder="Name:" formControlName="name" required>
+        <mat-error>
+          <app-validator-message [field]="form.get('name')"></app-validator-message>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
         <input matInput placeholder="Email:" formControlName="email" required>
         <mat-error>
           <app-validator-message [field]="form.get('email')"></app-validator-message>

@@ -1,8 +1,10 @@
 <mat-drawer-container class="example-container">
-  <mat-drawer mode="side" opened>
+  <mat-drawer mode="side" [(opened)]="isOpenedSidebar">
     <div class="side-bar-layout">
       <ul>
-        <li><p class="title">Admin</p></li>
+        <li>
+          <p class="title" *ngIf="profile$ | async as profile">{{profile.name}}</p>
+        </li>
 
         <li *ngFor="let link of links" routerLinkActive="active">
           <a [routerLink]="[link.url]">{{link.name}}</a>
@@ -14,6 +16,10 @@
   </mat-drawer>
 
   <mat-drawer-content>
-    <router-outlet></router-outlet>
+    <app-header (onToggleSidebar)="onToggleSidebar($event)" [isOpenedSidebar]="isOpenedSidebar"></app-header>
+
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
   </mat-drawer-content>
 </mat-drawer-container>

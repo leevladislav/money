@@ -33,6 +33,15 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'home'
+      },
+      {
+        path: 'home',
+        loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePageModule)
+      },
+      {
         path: 'overview',
         loadChildren: () => import('./overview-page/overview-page.module').then(m => m.OverviewPageModule)
       },
@@ -47,10 +56,6 @@ const routes: Routes = [
       {
         path: 'order',
         loadChildren: () => import('./order-page/order-page.module').then(m => m.OrderPageModule)
-      },
-      {
-        path: 'categories',
-        loadChildren: () => import('./products-page/products-page.module').then(m => m.ProductsPageModule)
       }
     ]
   }

@@ -15,7 +15,7 @@ module.exports.login = async function(req, res) {
             const token = jwt.sign({
                 email: candidate.email,
                 userId: candidate._id
-            }, keys.jwt, {expiresIn: 60 * 60});
+            }, keys.jwt, {expiresIn: 720 * 60});
 
             res.status(200).json({
                 token: `Bearer ${token}`
@@ -35,7 +35,7 @@ module.exports.login = async function(req, res) {
 };
 
 module.exports.register = async function(req, res) {
-    // email password
+    // email password name
     const candidate = await User.findOne({email: req.body.email});
 
     if (candidate) {
@@ -48,6 +48,7 @@ module.exports.register = async function(req, res) {
         const salt = bcrypt.genSaltSync(10);
         const password = req.body.password;
         const user = new User({
+            name: req.body.name,
             email: req.body.email,
             password: bcrypt.hashSync(password, salt)
         });
