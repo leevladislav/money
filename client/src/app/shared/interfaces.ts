@@ -11,6 +11,15 @@ export interface Message {
 
 export interface Category {
   name: string;
+  budget: number;
+  imageSrc?: string;
+  user?: string;
+  _id?: string;
+}
+
+export interface Wallet {
+  name: string;
+  budget: number;
   imageSrc?: string;
   user?: string;
   _id?: string;

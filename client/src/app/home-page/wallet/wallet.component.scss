@@ -1,0 +1,13 @@
+.wallet-layout {
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 20px 0;
+
+    .mat-form-field {
+      min-width: 300px;
+    }
+  }
+}

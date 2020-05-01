@@ -17,6 +17,13 @@
       </mat-error>
     </mat-form-field>
 
+    <mat-form-field>
+      <input matInput placeholder="Budget:" formControlName="budget" required>
+      <mat-error>
+        <app-validator-message [field]="form.get('budget')"></app-validator-message>
+      </mat-error>
+    </mat-form-field>
+
     <div class="upload-wrapper">
       <input type="file" name="file" id="file" class="input-file"
              #input (change)="onFileUpload($event)">

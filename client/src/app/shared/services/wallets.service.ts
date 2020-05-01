@@ -1,24 +1,24 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Category, Message} from '../interfaces';
+import {Category, Message, Wallet} from '../interfaces';
 import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CategoriesService {
+export class WalletsService {
   constructor(private http: HttpClient) {
   }
 
-  fetch(): Observable<Category[]> {
-    return this.http.get<Category[]>('/api/category');
+  fetch(): Observable<Wallet[]> {
+    return this.http.get<Wallet[]>('/api/wallets');
   }
 
-  getById(id: string): Observable<Category> {
-    return this.http.get<Category>(`/api/category/${id}`);
+  getById(id: string): Observable<Wallet> {
+    return this.http.get<Wallet>(`/api/wallets/${id}`);
   }
 
-  create(name: string, budget: number, image?: File): Observable<Category> {
+  create(name: string, budget: number, image?: File): Observable<Wallet> {
     const formData = new FormData();
 
     if (image) {
@@ -28,10 +28,10 @@ export class CategoriesService {
     formData.append('name', name);
     formData.append('budget', budget.toString());
 
-    return this.http.post<Category>('/api/category', formData);
+    return this.http.post<Wallet>('/api/wallets', formData);
   }
 
-  update(id: string, name: string, budget: number, image?: File): Observable<Category> {
+  update(id: string, name: string, budget: number, image?: File): Observable<Wallet> {
     const formData = new FormData();
 
     if (image) {
@@ -41,7 +41,7 @@ export class CategoriesService {
     formData.append('name', name);
     formData.append('budget', budget.toString());
 
-    return this.http.patch<Category>(`/api/category/${id}`, formData);
+    return this.http.patch<Wallet>(`/api/category/${id}`, formData);
   }
 
   delete(id: string): Observable<Message> {

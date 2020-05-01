@@ -1,32 +1,32 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {of} from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CategoriesService} from '../../../shared/services/categories.service';
-import {switchMap} from 'rxjs/operators';
-import {Category} from '../../../shared/interfaces';
+import {Wallet} from '../../shared/interfaces';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
+import {MatDialog} from '@angular/material/dialog';
+import {WalletsService} from '../../shared/services/wallets.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {OpenModalInfoService} from '../../../shared/services/open-modal-info.service';
-import {MatDialog} from "@angular/material/dialog";
-import {ModalConfirmComponent} from "../../../entry-components/modal-confirm/modal-confirm.component";
+import {switchMap} from 'rxjs/operators';
+import {of} from 'rxjs';
+import {ModalConfirmComponent} from '../../entry-components/modal-confirm/modal-confirm.component';
 
 @Component({
-  selector: 'app-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.scss']
+  selector: 'app-wallet',
+  templateUrl: './wallet.component.html',
+  styleUrls: ['./wallet.component.scss']
 })
-export class CategoryComponent implements OnInit, OnDestroy {
+export class WalletComponent implements OnInit, OnDestroy {
   @ViewChild('input', {static: false}) inputRef: ElementRef;
   form: FormGroup;
   image: File;
   imagePreview: any = '';
   isNew = true;
-  category: Category;
+  wallet: Wallet;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private categoriesService: CategoriesService,
+    private walletsService: WalletsService,
     private router: Router,
     private openModalService: OpenModalInfoService,
     private dialog: MatDialog
@@ -34,33 +34,43 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.initForm();
+    this.getWallet();
+  }
+
+  initForm() {
     this.form = this.fb.group({
-      name: [null, [Validators.required]]
+      name: [null, [Validators.required]],
+      budget: [null, [Validators.required]]
     });
 
     this.form.disable();
+  }
 
+  getWallet() {
     this.route.params.pipe(
       untilDestroyed(this),
       switchMap(
         (params: Params) => {
-          if (params['id']) {
+          if (params.id) {
             this.isNew = false;
-            return this.categoriesService.getById(params['id']);
+            return this.walletsService.getById(params.id);
           }
 
           return of(null);
         }
       )
     ).subscribe(
-      (category: Category) => {
-        if (category) {
-          this.category = category;
+      (wallet: Wallet) => {
+        if (wallet) {
+          this.wallet = wallet;
+
           this.form.patchValue({
-            name: category.name
+            name: wallet.name,
+            budget: wallet.budget
           });
 
-          this.imagePreview = category.imageSrc;
+          this.imagePreview = wallet.imageSrc;
         }
 
         this.form.enable();
@@ -73,11 +83,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.inputRef.nativeElement.click();
   }
 
-  deleteCategory() {
+  deleteWallet() {
     const dialogRef = this.dialog.open(ModalConfirmComponent, {
       data: {
         title: 'Attention!',
-        type: `Are you sure you want to delete category ${this.category.name} ?`,
+        type: `Are you sure you want to delete ${this.wallet.name}?`,
       },
       panelClass: ['primary-modal'],
       autoFocus: false
@@ -87,10 +97,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
       .pipe(untilDestroyed(this))
       .subscribe((result) => {
         if (result) {
-          this.categoriesService.delete(this.category._id)
+          this.walletsService.delete(this.wallet._id)
             .pipe(untilDestroyed(this))
             .subscribe(
-              response => this.openModalService.openModal(response, null, response.message, 'categories'),
+              response => this.openModalService.openModal(response, null, response.message, 'home'),
               error => this.openModalService.openModal(null, error.error.message)
             );
         }
@@ -112,6 +122,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     let obs$;
+    let messageSuccess = 'Wallet successfully edited';
 
     if (this.form.invalid) {
       return this.form.markAllAsTouched();
@@ -120,23 +131,24 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.form.disable();
 
     if (this.isNew) {
-      obs$ = this.categoriesService.create(this.form.value.name, this.image);
+      messageSuccess = 'Wallet successfully added';
+
+      obs$ = this.walletsService.create(this.form.value.name, this.form.value.budget, this.image);
     } else {
-      obs$ = this.categoriesService.update(this.category._id, this.form.value.name, this.image);
+      obs$ = this.walletsService.update(this.wallet._id, this.form.value.name, this.form.value.budget, this.image);
     }
 
     obs$.pipe(untilDestroyed(this))
       .subscribe(
-        category => {
-          this.category = category;
-          this.openModalService.openModal(category, null, 'Category successfully edited');
+        wallet => {
+          this.wallet = wallet;
+          this.openModalService.openModal(wallet, null, messageSuccess, '/home');
           this.form.enable();
         },
         error => {
           this.openModalService.openModal(null, error.error.message);
           this.form.enable();
-        }
-      );
+        });
   }
 
   ngOnDestroy() {

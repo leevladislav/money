@@ -1,9 +1,10 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HomePageComponent} from './home-page.component';
-import {CategoriesListComponent} from './categories-list/categories-list.component';
-import {CategoryComponent} from './categories-list/category/category.component';
+import {CategoryComponent} from './category/category.component';
 import {PositionComponent} from './positions-list/position/position.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
+import {WalletComponent} from './wallet/wallet.component';
 
 const routes: Routes = [
   {
@@ -12,14 +13,22 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: CategoriesListComponent
+        component: DashboardComponent
       },
       {
-        path: 'create',
+        path: 'wallet/create',
+        component: WalletComponent
+      },
+      {
+        path: 'wallet/:id/edit',
+        component: WalletComponent
+      },
+      {
+        path: 'category/create',
         component: CategoryComponent
       },
       {
-        path: ':id/edit',
+        path: 'category/:id/edit',
         component: CategoryComponent
       },
       {
