@@ -1,5 +1,14 @@
 .wallet-layout {
-  form {
+  .heading {
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+  }
+
+  .body {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -9,5 +18,9 @@
     .mat-form-field {
       min-width: 300px;
     }
+  }
+
+  .footer {
+    text-align: center;
   }
 }

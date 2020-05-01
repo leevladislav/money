@@ -1,63 +1,60 @@
-<app-back-btn></app-back-btn>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="wallet-layout">
+    <div class="heading">
+      <div class="actions">
+        <app-back-btn></app-back-btn>
 
-<div class="wallet-layout">
-  <div class="hero">
-    <div *ngIf="isNew; else edit">
-      <p class="section-title">Where do you keep your money?</p>
+        <button type="button" mat-button-base mat-stroked-button *ngIf="!isNew" (click)="deleteWallet()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+      <div *ngIf="isNew; else edit">
+        <p class="section-title">Where do you keep your money?</p>
+      </div>
+
+      <ng-template #edit>
+        <p class="section-title">Edit Wallet</p>
+      </ng-template>
     </div>
 
-    <ng-template #edit>
-      <p class="section-title">Edit Wallet</p>
-    </ng-template>
-  </div>
+    <div class="body">
+      <div class="upload-wrapper">
+        <input type="file" name="file" id="file" class="input-file"
+               #input (change)="onFileUpload($event)">
 
+        <button (click)="triggerClick()" [disabled]="form.disabled"
+                type="button" mat-raised-button class="btn-upload">
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div class="upload-wrapper">
-      <input type="file" name="file" id="file" class="input-file"
-             #input (change)="onFileUpload($event)">
+          <div class="img-wrapper">
+            <img *ngIf="imagePreview; else emptyImage" [src]="imagePreview" alt="wallet image">
 
-      <button (click)="triggerClick()" [disabled]="form.disabled"
-              type="button" mat-raised-button class="btn-upload">
+            <ng-template #emptyImage>
+              <img src="assets/images/wallet-default.jpeg" alt="wallet image">
+            </ng-template>
+          </div>
 
-        <div class="img-wrapper">
-          <img *ngIf="imagePreview; else emptyImage" [src]="imagePreview" alt="wallet image">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
 
-          <ng-template #emptyImage>
-            <img src="assets/images/wallet-default.jpeg" alt="wallet image">
-          </ng-template>
-        </div>
+      <mat-form-field>
+        <input matInput placeholder="Wallet name:" formControlName="name" required>
+        <mat-error>
+          <app-validator-message [field]="form.get('name')"></app-validator-message>
+        </mat-error>
+      </mat-form-field>
 
-        <mat-icon>edit</mat-icon>
-      </button>
+      <mat-form-field>
+        <input matInput placeholder="Account balance:" formControlName="budget" required>
+        <mat-error>
+          <app-validator-message [field]="form.get('budget')"></app-validator-message>
+        </mat-error>
+      </mat-form-field>
     </div>
 
-    <mat-form-field>
-      <input matInput placeholder="Wallet name:" formControlName="name" required>
-      <mat-error>
-        <app-validator-message [field]="form.get('name')"></app-validator-message>
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input matInput placeholder="Account balance:" formControlName="budget" required>
-      <mat-error>
-        <app-validator-message [field]="form.get('budget')"></app-validator-message>
-      </mat-error>
-    </mat-form-field>
-
-    <div class="submit">
+    <div class="footer">
       <button [disabled]="form.invalid || form.disabled" type="submit" mat-raised-button color="primary">
         Save wallet
       </button>
     </div>
   </form>
-</div>
-
-<div class="page-title">
-  <span>
-    <button mat-stroked-button *ngIf="!isNew" (click)="deleteWallet()">
-      <mat-icon>delete</mat-icon>
-    </button>
-  </span>
-</div>

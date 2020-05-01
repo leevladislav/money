@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Category, Message, Wallet} from '../interfaces';
+import {Message, Wallet} from '../interfaces';
 import {Observable} from 'rxjs';
 
 @Injectable({
@@ -41,10 +41,10 @@ export class WalletsService {
     formData.append('name', name);
     formData.append('budget', budget.toString());
 
-    return this.http.patch<Wallet>(`/api/category/${id}`, formData);
+    return this.http.patch<Wallet>(`/api/wallets/${id}`, formData);
   }
 
   delete(id: string): Observable<Message> {
-    return this.http.delete<Message>(`/api/category/${id}`);
+    return this.http.delete<Message>(`/api/wallets/${id}`);
   }
 }

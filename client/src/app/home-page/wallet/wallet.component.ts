@@ -87,7 +87,7 @@ export class WalletComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ModalConfirmComponent, {
       data: {
         title: 'Attention!',
-        type: `Are you sure you want to delete ${this.wallet.name}?`,
+        type: `Are you sure you want to delete ${this.wallet.name} wallet?`,
       },
       panelClass: ['primary-modal'],
       autoFocus: false
@@ -100,7 +100,7 @@ export class WalletComponent implements OnInit, OnDestroy {
           this.walletsService.delete(this.wallet._id)
             .pipe(untilDestroyed(this))
             .subscribe(
-              response => this.openModalService.openModal(response, null, response.message, 'home'),
+              response => this.openModalService.openModal(response, null, response.message, '/home'),
               error => this.openModalService.openModal(null, error.error.message)
             );
         }
