@@ -1,11 +1,10 @@
-const Category = require('../models/Category');
-const Position = require('../models/Position');
+const Wallet = require('../models/Wallets');
 const errorHandler = require('../utils/errorHandler');
 
 module.exports.getAll = async function(req, res) {
     try {
-        const categories = await Category.find({user: req.user.id});
-        res.status(200).json(categories);
+        const wallets = await Wallet.find({user: req.user.id});
+        res.status(200).json(wallets);
     } catch (e) {
         errorHandler(res, e);
     }
@@ -13,8 +12,8 @@ module.exports.getAll = async function(req, res) {
 
 module.exports.getById = async function(req, res) {
     try {
-        const category = await Category.findById(req.params.id);
-        res.status(200).json(category);
+        const wallet = await Wallet.findById(req.params.id);
+        res.status(200).json(wallet);
     } catch (e) {
         errorHandler(res, e);
     }
@@ -22,10 +21,9 @@ module.exports.getById = async function(req, res) {
 
 module.exports.remove = async function(req, res) {
     try {
-        await Category.remove({_id: req.params.id});
-        await Position.remove({category: req.params.id});
+        await Wallet.remove({_id: req.params.id});
         res.status(200).json({
-            message: 'Category successfully removed'
+            message: 'Wallet successfully removed'
         })
     } catch (e) {
         errorHandler(res, e);
@@ -33,15 +31,16 @@ module.exports.remove = async function(req, res) {
 };
 
 module.exports.create = async function(req, res) {
-    const category = new Category({
+    const wallet = new Wallet({
         name: req.body.name,
+        budget: req.body.budget,
         user: req.user.id,
         imageSrc: req.file ? req.file.path : ''
     });
 
     try {
-        await category.save();
-        res.status(201).json(category);
+        await wallet.save();
+        res.status(201).json(wallet);
     } catch (e) {
         errorHandler(res, e);
     }
@@ -49,7 +48,8 @@ module.exports.create = async function(req, res) {
 
 module.exports.update = async function(req, res) {
     const updated = {
-        name: req.body.name
+        name: req.body.name,
+        budget: req.body.budget
     };
 
     if (req.file) {
@@ -57,13 +57,13 @@ module.exports.update = async function(req, res) {
     }
 
     try {
-        const category = await Category.findOneAndUpdate(
+        const wallet = await Wallet.findOneAndUpdate(
             {_id: req.params.id},
             {$set: updated},
             {new: true}
         );
 
-        res.status(200).json(category);
+        res.status(200).json(wallet);
     } catch (e) {
         errorHandler(res, e);
     }

@@ -6,6 +6,10 @@ const categorySchema = new Schema({
         type: String,
         required: true
     },
+    budget: {
+        type: Number,
+        required: true
+    },
     imageSrc: {
         type: String,
         default: ''
@@ -16,4 +20,4 @@ const categorySchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('categories', categorySchema);
+module.exports = mongoose.model('wallets', categorySchema);

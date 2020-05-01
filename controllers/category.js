@@ -35,6 +35,7 @@ module.exports.remove = async function(req, res) {
 module.exports.create = async function(req, res) {
     const category = new Category({
         name: req.body.name,
+        budget: req.body.budget,
         user: req.user.id,
         imageSrc: req.file ? req.file.path : ''
     });
@@ -49,7 +50,8 @@ module.exports.create = async function(req, res) {
 
 module.exports.update = async function(req, res) {
     const updated = {
-        name: req.body.name
+        name: req.body.name,
+        budget: req.body.budget
     };
 
     if (req.file) {
