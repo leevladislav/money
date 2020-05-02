@@ -17,6 +17,7 @@
         width: 200px;
         overflow: hidden;
         box-shadow: $primary-box-shadow;
+        border-radius: $border-radius;
 
         img {
           object-fit: cover;

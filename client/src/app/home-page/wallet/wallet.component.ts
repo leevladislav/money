@@ -100,7 +100,10 @@ export class WalletComponent implements OnInit, OnDestroy {
           this.walletsService.delete(this.wallet._id)
             .pipe(untilDestroyed(this))
             .subscribe(
-              response => this.openModalService.openModal(response, null, response.message, '/home'),
+              response => {
+                this.openModalService.openModal(response, null, response.message, '/home');
+                this.walletsService.onUpdateWallets$.next(true);
+              },
               error => this.openModalService.openModal(null, error.error.message)
             );
         }
@@ -132,7 +135,6 @@ export class WalletComponent implements OnInit, OnDestroy {
 
     if (this.isNew) {
       messageSuccess = 'Wallet successfully added';
-
       obs$ = this.walletsService.create(this.form.value.name, this.form.value.budget, this.image);
     } else {
       obs$ = this.walletsService.update(this.wallet._id, this.form.value.name, this.form.value.budget, this.image);
@@ -144,6 +146,7 @@ export class WalletComponent implements OnInit, OnDestroy {
           this.wallet = wallet;
           this.openModalService.openModal(wallet, null, messageSuccess, '/home');
           this.form.enable();
+          this.walletsService.onUpdateWallets$.next(true);
         },
         error => {
           this.openModalService.openModal(null, error.error.message);

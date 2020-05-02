@@ -1,12 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Message, Wallet} from '../interfaces';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WalletsService {
+  onUpdateWallets$ = new Subject<boolean>();
+
   constructor(private http: HttpClient) {
   }
 

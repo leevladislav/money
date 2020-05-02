@@ -1,35 +1,24 @@
-<div *ngIf="wallets$ | async as wallets; else loader">
-  <div class="card-list-layout" *ngIf="wallets.length !==0; else empty">
-    <a [routerLink]="['/home/wallet', wallet._id, 'edit']"
-       *ngFor="let wallet of wallets" class="layout-item">
+<div *ngIf="wallets$ | async as wallets">
+  <div class="wallets-layout">
+    <a [routerLink]="['/home/wallet', wallet._id, 'edit']" *ngFor="let wallet of wallets" class="wallet">
 
       <p class="title">{{wallet.name}}</p>
 
       <div class="img-wrapper">
-        <img *ngIf="wallet.imageSrc; else noImage" src="{{wallet.imageSrc}}" alt="wallet">
+        <img *ngIf="wallet.imageSrc; else emptyImage" [src]="wallet.imageSrc" alt="wallet">
 
-        <ng-template #noImage>
-          <mat-icon>photo_camera</mat-icon>
+        <ng-template #emptyImage>
+          <img src="assets/images/wallet-default.jpeg" alt="wallet image">
         </ng-template>
       </div>
 
       <p class="budget">{{wallet.budget}}</p>
     </a>
 
-    <button [routerLink]="['/home/wallet/create']" class="layout-item"
-            mat-stroked-button color="primary">
-      <mat-icon>add</mat-icon>
+    <button [routerLink]="['/home/wallet/create']" class="add-wallet" mat-stroked-button color="primary">
+<!--      <span class="img-wrapper">-->
+        <mat-icon>add</mat-icon>
+<!--      </span>-->
     </button>
   </div>
-
-  <ng-template #empty>
-    <button [routerLink]="['/home/wallet/create']" class="add-category"
-            mat-stroked-button color="primary">
-      <mat-icon>add</mat-icon>
-    </button>
-  </ng-template>
 </div>
-
-<ng-template #loader>
-  <app-loader></app-loader>
-</ng-template>

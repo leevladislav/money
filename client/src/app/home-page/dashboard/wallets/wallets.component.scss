@@ -1,0 +1,57 @@
+@import '../../../../styles/variables';
+
+.wallets-layout {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+
+  .wallet {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    background-color: transparent;
+    max-width: calc(25% - 30px);
+    width: 100%;
+    min-height: 280px;
+    align-items: center;
+    justify-content: center;
+    min-width: 250px;
+    border: none;
+  }
+
+  .img-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    min-width: 250px;
+    border-radius: $border-radius;
+    overflow: hidden;
+    box-shadow: $primary-box-shadow;
+
+    img {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .title,
+  .budget {
+    padding: 10px 20px;
+    margin: 0;
+    text-align: center;
+  }
+
+  button.add-wallet {
+    border: none;
+
+    ::ng-deep {
+      .mat-button-focus-overlay {
+        background-color: transparent;
+      }
+    }
+  }
+}

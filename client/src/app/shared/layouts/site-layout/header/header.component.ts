@@ -1,5 +1,8 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MediaMatcher} from '@angular/cdk/layout';
+import {WalletsService} from '../../../services/wallets.service';
+import {untilDestroyed} from 'ngx-take-until-destroy';
+import {Wallet} from '../../../interfaces';
 
 @Component({
   selector: 'app-header',
@@ -11,12 +14,39 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() isOpenedSidebar: boolean;
   mobileQuery: MediaQueryList;
   mobileQueryListener: () => void;
+  balance = 0;
 
-  constructor(private media: MediaMatcher) {
+  constructor(
+    private media: MediaMatcher,
+    private walletsService: WalletsService
+  ) {
   }
 
   ngOnInit() {
+    this.walletsService.onUpdateWallets$
+      .pipe(untilDestroyed(this))
+      .subscribe(trigger => {
+        if (trigger) {
+          this.getWallets();
+        }
+      });
+
+    this.getWallets();
     this.mobileWidthListener();
+  }
+
+  getWallets() {
+    this.walletsService.fetch()
+      .pipe(untilDestroyed(this))
+      .subscribe((wallets: Wallet[]) => {
+        if (wallets.length) {
+          this.countBalance(wallets);
+        }
+      });
+  }
+
+  countBalance(wallets) {
+    this.balance = wallets.reduce((total, item) => total += item.budget, 0);
   }
 
   mobileWidthListener() {
