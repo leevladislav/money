@@ -2,7 +2,8 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {MediaMatcher} from '@angular/cdk/layout';
 import {WalletsService} from '../../../services/wallets.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {Wallet} from '../../../interfaces';
+import {Category, Wallet} from '../../../interfaces';
+import {CategoriesService} from '../../../services/categories.service';
 
 @Component({
   selector: 'app-header',
@@ -15,10 +16,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   mobileQuery: MediaQueryList;
   mobileQueryListener: () => void;
   balance = 0;
+  expenses = 0;
 
   constructor(
     private media: MediaMatcher,
-    private walletsService: WalletsService
+    private walletsService: WalletsService,
+    private categoriesService: CategoriesService
   ) {
   }
 
@@ -31,7 +34,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
       });
 
+    this.categoriesService.onUpdateCategories$
+      .pipe(untilDestroyed(this))
+      .subscribe(trigger => {
+        if (trigger) {
+          this.getExpenses();
+        }
+      });
+
     this.getWallets();
+    this.getExpenses();
     this.mobileWidthListener();
   }
 
@@ -47,6 +59,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   countBalance(wallets) {
     this.balance = wallets.reduce((total, item) => total += item.budget, 0);
+  }
+
+  getExpenses() {
+    this.categoriesService.fetch()
+      .pipe(untilDestroyed(this))
+      .subscribe((categories: Category[]) => {
+        if (categories.length) {
+          this.countExpenses(categories);
+        }
+      });
+  }
+
+  countExpenses(categories) {
+    this.expenses = categories.reduce((total, item) => total += item.budget, 0);
   }
 
   mobileWidthListener() {

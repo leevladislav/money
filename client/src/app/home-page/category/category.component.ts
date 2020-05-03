@@ -92,7 +92,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
           this.categoriesService.delete(this.category._id)
             .pipe(untilDestroyed(this))
             .subscribe(
-              response => this.openModalService.openModal(response, null, response.message, 'categories'),
+              response => {
+                this.openModalService.openModal(response, null, response.message, 'categories');
+                this.categoriesService.onUpdateCategories$.next(true);
+              },
               error => this.openModalService.openModal(null, error.error.message)
             );
         }
@@ -141,6 +144,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
           this.category = category;
           this.openModalService.openModal(category, null, 'Category successfully edited', '/home');
           this.form.enable();
+          this.categoriesService.onUpdateCategories$.next(true);
         },
         error => {
           this.openModalService.openModal(null, error.error.message);

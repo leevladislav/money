@@ -1,15 +1,42 @@
-<app-back-btn></app-back-btn>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="category-layout">
+  <div class="heading">
+    <div class="actions">
+      <app-back-btn></app-back-btn>
 
-<div class="page-title">
-  <span>
-    <button mat-stroked-button *ngIf="!isNew" (click)="deleteCategory()">
-      <mat-icon>delete</mat-icon>
-    </button>
-  </span>
-</div>
+      <button type="button" mat-button-base mat-stroked-button *ngIf="!isNew" (click)="deleteCategory()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
 
-<div class="category-layout">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div *ngIf="isNew; else edit">
+      <p class="section-title">Where do you spend your money?</p>
+    </div>
+
+    <ng-template #edit>
+      <p class="section-title">Edit expense category</p>
+    </ng-template>
+  </div>
+
+  <div class="body">
+    <div class="upload-wrapper">
+      <input type="file" name="file" class="input-file"
+             #input (change)="onFileUpload($event)">
+
+      <button (click)="triggerClick()" [disabled]="form.disabled"
+              type="button" mat-raised-button class="btn-upload">
+
+        <div class="img-wrapper">
+          <img *ngIf="imagePreview; else emptyImage" [src]="imagePreview" alt="wallet image">
+
+          <ng-template #emptyImage>
+            <img src="assets/images/wallet-default.jpeg" alt="wallet image">
+          </ng-template>
+        </div>
+
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+
     <mat-form-field>
       <input matInput placeholder="Category name:" formControlName="name" required>
       <mat-error>
@@ -23,25 +50,13 @@
         <app-validator-message [field]="form.get('budget')"></app-validator-message>
       </mat-error>
     </mat-form-field>
-
-    <div class="upload-wrapper">
-      <input type="file" name="file" id="file" class="input-file"
-             #input (change)="onFileUpload($event)">
-
-      <button (click)="triggerClick()" [disabled]="form.disabled"
-              type="button" mat-raised-button class="btn-upload">
-        <mat-icon>backup</mat-icon> Upload image
-      </button>
-
-      <button [disabled]="form.invalid || form.disabled" type="submit" mat-raised-button color="primary">
-        Save Category
-      </button>
-    </div>
-  </form>
-
-  <div class="layout-item item-img">
-    <img [src]="imagePreview" *ngIf="imagePreview" alt="category image">
   </div>
-</div>
+
+  <div class="footer">
+    <button [disabled]="form.invalid || form.disabled" type="submit" mat-raised-button color="primary">
+      Save Category
+    </button>
+  </div>
+</form>
 
 <app-positions-list *ngIf="category?._id" [categoryId]="category._id"></app-positions-list>
