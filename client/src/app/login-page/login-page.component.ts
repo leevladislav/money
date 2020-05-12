@@ -54,7 +54,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.auth.login(data)
       .pipe(untilDestroyed(this))
       .subscribe(
-        () => this.router.navigate(['/home']),
+        () => this.router.navigate(['/expenses']),
         (error) => {
           this.dialog.open(ModalInfoComponent, {
             data: {

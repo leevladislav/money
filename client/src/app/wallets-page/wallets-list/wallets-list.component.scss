@@ -1,4 +1,4 @@
-@import '../../../../styles/variables';
+@import '../../../styles/variables';
 
 .wallets-layout {
   display: flex;
@@ -19,6 +19,10 @@
     justify-content: center;
     min-width: 250px;
     border: none;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   .img-wrapper {
@@ -47,6 +51,10 @@
 
   button.add-wallet {
     border: none;
+    max-width: calc(25% - 30px);
+    width: 100%;
+    min-width: 250px;
+    min-height: 250px;
 
     ::ng-deep {
       .mat-button-focus-overlay {

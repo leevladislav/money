@@ -12,7 +12,9 @@ import {Observable} from 'rxjs';
 })
 export class SiteLayoutComponent implements OnInit {
   links = [
-    {url: '/home', name: 'Home'},
+    {url: '/expenses', name: 'Expenses'},
+    {url: '/wallets', name: 'Wallets'},
+    {url: '/categories', name: 'Categories'},
     {url: '/overview', name: 'Overview'},
     {url: '/analytics', name: 'Analytics'},
     {url: '/history', name: 'History'},

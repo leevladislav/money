@@ -1,6 +1,6 @@
 <div *ngIf="categories$ | async as categories; else loader">
   <div class="card-list-layout" *ngIf="categories.length !==0; else empty">
-    <a [routerLink]="['/home/category', category._id, 'edit']"
+    <a [routerLink]="[category._id, 'edit']"
        *ngFor="let category of categories" class="layout-item">
 
       <p class="title">{{category.name}}</p>
@@ -16,14 +16,14 @@
       <p class="budget">{{category.budget}}</p>
     </a>
 
-    <button [routerLink]="['/home/category/create']" class="layout-item"
+    <button [routerLink]="['create']" class="layout-item"
             mat-stroked-button color="primary">
       <mat-icon>add</mat-icon>
     </button>
   </div>
 
   <ng-template #empty>
-    <button [routerLink]="['/home/category/create']" class="add-category"
+    <button [routerLink]="['create']" class="add-category"
             mat-stroked-button color="primary">
       <mat-icon>add</mat-icon>
     </button>

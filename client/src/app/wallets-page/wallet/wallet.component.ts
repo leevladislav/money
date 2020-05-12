@@ -101,7 +101,7 @@ export class WalletComponent implements OnInit, OnDestroy {
             .pipe(untilDestroyed(this))
             .subscribe(
               response => {
-                this.openModalService.openModal(response, null, response.message, '/home');
+                this.openModalService.openModal(response, null, response.message, '/wallets');
                 this.walletsService.onUpdateWallets$.next(true);
               },
               error => this.openModalService.openModal(null, error.error.message)
@@ -144,7 +144,7 @@ export class WalletComponent implements OnInit, OnDestroy {
       .subscribe(
         wallet => {
           this.wallet = wallet;
-          this.openModalService.openModal(wallet, null, messageSuccess, '/home');
+          this.openModalService.openModal(wallet, null, messageSuccess, '/wallets');
           this.form.enable();
           this.walletsService.onUpdateWallets$.next(true);
         },

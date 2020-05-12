@@ -38,8 +38,16 @@ const routes: Routes = [
         redirectTo: 'home'
       },
       {
-        path: 'home',
-        loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePageModule)
+        path: 'expenses',
+        loadChildren: () => import('./expenses-page/expenses-page.module').then(m => m.ExpensesPageModule)
+      },
+      {
+        path: 'wallets',
+        loadChildren: () => import('./wallets-page/wallets-page.module').then(m => m.WalletsPageModule)
+      },
+      {
+        path: 'categories',
+        loadChildren: () => import('./categories-page/categories-page.module').then(m => m.CategoriesPageModule)
       },
       {
         path: 'overview',

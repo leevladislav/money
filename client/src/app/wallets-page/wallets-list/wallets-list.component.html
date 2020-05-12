@@ -1,6 +1,6 @@
 <div *ngIf="wallets$ | async as wallets">
   <div class="wallets-layout">
-    <a [routerLink]="['/home/wallet', wallet._id, 'edit']" *ngFor="let wallet of wallets" class="wallet">
+    <div [routerLink]="[wallet._id, 'edit']" *ngFor="let wallet of wallets" class="wallet">
 
       <p class="title">{{wallet.name}}</p>
 
@@ -13,9 +13,9 @@
       </div>
 
       <p class="budget">{{wallet.budget}}</p>
-    </a>
+    </div>
 
-    <button [routerLink]="['/home/wallet/create']" class="add-wallet"
+    <button [routerLink]="['create']" class="add-wallet"
             *ngIf="wallets.length < 4" mat-stroked-button color="primary">
       <mat-icon>add</mat-icon>
     </button>
