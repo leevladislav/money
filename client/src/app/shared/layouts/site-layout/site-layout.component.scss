@@ -5,27 +5,28 @@
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  background-color: $accent-background;
+  background-color: $primary-background;
 
   ul {
     li {
       .title {
         text-align: center;
         font-size: 16px;
-        color: $light-text-color;
+        color: $primary-text-color;
       }
 
       a {
         padding: 12px 14px;
         display: block;
-        color: $light-text-color;
+        color: $primary-link-color;
         border-left: 4px solid transparent;
       }
 
       &.active a,
       a:hover {
-        background-color: $accent-hover-background;
-        border-left-color: $muted-background;
+        background-color: $muted-background;
+        border-left-color: $accent-background;
+        color: $primary-link-hover-color;
       }
     }
   }
@@ -37,6 +38,8 @@
 }
 
 .mat-drawer-container {
+  background-color: $light-background;
+
   .mat-drawer-content {
     padding: 0;
 
