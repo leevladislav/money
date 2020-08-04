@@ -34,10 +34,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.form = this.fb.group({
-      name: [null, [Validators.required]],
-      budget: [0, [Validators.required]]
-    });
+    this.form = this.fb.group({name: [null, [Validators.required]]});
 
     this.form.disable();
 
@@ -45,9 +42,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
       untilDestroyed(this),
       switchMap(
         (params: Params) => {
-          if (params['id']) {
+          if (params.id) {
             this.isNew = false;
-            return this.categoriesService.getById(params['id']);
+            return this.categoriesService.getById(params.id);
           }
 
           return of(null);
@@ -57,10 +54,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
       (category: Category) => {
         if (category) {
           this.category = category;
-          this.form.patchValue({
-            name: category.name,
-            budget: category.budget
-          });
+          this.form.patchValue({name: category.name});
 
           this.imagePreview = category.imageSrc;
         }
@@ -127,14 +121,12 @@ export class CategoryComponent implements OnInit, OnDestroy {
     if (this.isNew) {
       obs$ = this.categoriesService.create(
         this.form.value.name,
-        this.form.value.budget,
         this.image
       );
     } else {
       obs$ = this.categoriesService.update(
         this.category._id,
         this.form.value.name,
-        this.form.value.budget,
         this.image);
     }
 

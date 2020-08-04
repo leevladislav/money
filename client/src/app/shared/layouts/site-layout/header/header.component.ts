@@ -4,6 +4,8 @@ import {WalletsService} from '../../../services/wallets.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {Category, Wallet} from '../../../interfaces';
 import {CategoriesService} from '../../../services/categories.service';
+import {MatDialog} from '@angular/material/dialog';
+import {ModalAddIncomeComponent} from '../../../../entry-components/modal-add-income/modal-add-income.component';
 
 @Component({
   selector: 'app-header',
@@ -17,11 +19,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   mobileQueryListener: () => void;
   balance = 0;
   expenses = 0;
+  wallets: Wallet[];
 
   constructor(
     private media: MediaMatcher,
     private walletsService: WalletsService,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private dialog: MatDialog
   ) {
   }
 
@@ -52,6 +56,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .pipe(untilDestroyed(this))
       .subscribe((wallets: Wallet[]) => {
         if (wallets.length) {
+          this.wallets = [...wallets];
           this.countBalance(wallets);
         }
       });
@@ -72,7 +77,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   countExpenses(categories) {
-    this.expenses = categories.reduce((total, item) => total += item.budget, 0);
+    // TODO: get real data
+    this.expenses = 0;
+    // this.expenses = categories.reduce((total, item) => total += item.budget, 0);
   }
 
   mobileWidthListener() {
@@ -92,6 +99,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   toggleSidebar(event) {
     this.onToggleSidebar.emit(event);
+  }
+
+  addIncome() {
+    this.dialog.open(ModalAddIncomeComponent, {
+      data: {
+        title: 'Adding income',
+        type: 'Select account where money comes to',
+        wallets: this.wallets
+      },
+      panelClass: ['primary-modal', 'modal-md'],
+      autoFocus: false
+    });
   }
 
   ngOnDestroy() {

@@ -9,24 +9,29 @@
 
   ul {
     li {
-      .title {
+      &.user {
+        padding: 16px 0;
         text-align: center;
-        font-size: 16px;
-        color: $primary-text-color;
+
+        .name {
+          font-size: 16px;
+          color: $primary-text-color;
+          margin: 0;
+        }
       }
 
       a {
         padding: 12px 14px;
         display: block;
         color: $primary-link-color;
-        border-left: 4px solid transparent;
+        border-left: 6px solid transparent;
       }
 
       &.active a,
       a:hover {
-        background-color: $muted-background;
+        background-color: $light-background;
         border-left-color: $accent-background;
-        color: $primary-link-hover-color;
+        color: $primary-link-color;
       }
     }
   }
@@ -38,8 +43,6 @@
 }
 
 .mat-drawer-container {
-  background-color: $light-background;
-
   .mat-drawer-content {
     padding: 0;
 

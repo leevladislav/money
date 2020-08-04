@@ -14,6 +14,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ModalInfoComponent} from './entry-components/modal-info/modal-info.component';
 import {ModalConfirmComponent} from './entry-components/modal-confirm/modal-confirm.component';
 import {ModalCropComponent} from './entry-components/modal-crop/modal-crop.component';
+import {ModalAddIncomeComponent} from './entry-components/modal-add-income/modal-add-income.component';
 import {ImageCropperModule} from 'ngx-image-cropper';
 import {HeaderComponent} from './shared/layouts/site-layout/header/header.component';
 
@@ -27,7 +28,8 @@ import {HeaderComponent} from './shared/layouts/site-layout/header/header.compon
     ModalInfoComponent,
     ModalConfirmComponent,
     ModalCropComponent,
-    HeaderComponent
+    HeaderComponent,
+    ModalAddIncomeComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +48,8 @@ import {HeaderComponent} from './shared/layouts/site-layout/header/header.compon
   entryComponents: [
     ModalInfoComponent,
     ModalConfirmComponent,
-    ModalCropComponent
+    ModalCropComponent,
+    ModalAddIncomeComponent
   ],
   bootstrap: [AppComponent]
 })

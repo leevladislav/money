@@ -1,0 +1,33 @@
+<app-modal-header [title]="data.title"></app-modal-header>
+
+<div class="dialog-content modal-add-income">
+  <p class="text-center">{{data.type}}</p>
+
+  <div class="wallets-layout">
+    <div *ngFor="let wallet of data.wallets"
+         (click)="selectWallet(wallet._id)"
+         class="layout-item"
+         [class.selected]="selectedWalletId === wallet._id">
+
+      <p class="title">{{wallet.name}}</p>
+
+      <div class="img-wrapper">
+        <img *ngIf="wallet.imageSrc; else emptyImage" [src]="wallet.imageSrc" alt="wallet">
+
+        <ng-template #emptyImage>
+          <img src="assets/images/wallet-default.jpeg" alt="wallet image">
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <mat-dialog-actions align="center">
+    <button mat-raised-button [mat-dialog-close]="false">
+      Cancel
+    </button>
+
+    <button mat-raised-button color="primary" (click)="addIncome()">
+      Add
+    </button>
+  </mat-dialog-actions>
+</div>

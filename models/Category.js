@@ -6,10 +6,6 @@ const categorySchema = new Schema({
         type: String,
         required: true
     },
-    budget: {
-        type: Number,
-        required: true
-    },
     imageSrc: {
         type: String,
         default: ''

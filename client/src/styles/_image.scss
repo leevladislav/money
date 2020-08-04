@@ -1,11 +1,14 @@
 .upload-wrapper {
   padding: 20px;
+  margin-top: 40px;
 
   .input-file {
     display: none;
   }
 
   .btn-upload {
+    max-width: none;
+    width: auto;
     padding: 0;
 
     .mat-button-wrapper {
@@ -14,7 +17,7 @@
 
       .img-wrapper {
         height: 200px;
-        width: 200px;
+        width: 300px;
         overflow: hidden;
         box-shadow: $primary-box-shadow;
         border-radius: $border-radius;
@@ -27,9 +30,14 @@
       }
 
       mat-icon {
+        padding: 5px;
         position: absolute;
-        top: -10px;
-        right: -30px;
+        top: 14px;
+        right: 14px;
+        background-color: $light-background;
+        border-radius: $border-radius;
+        width: 34px;
+        height: 34px;
       }
     }
   }

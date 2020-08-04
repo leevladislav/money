@@ -23,4 +23,8 @@
       color: $primary-text-color;
     }
   }
+
+  &.modal-md {
+    max-width: 900px !important;
+  }
 }

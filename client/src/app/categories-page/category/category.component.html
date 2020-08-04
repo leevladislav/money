@@ -1,21 +1,19 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="category-layout">
-  <div class="heading">
-    <div class="actions">
-      <app-back-btn></app-back-btn>
+  <div class="heading-page-actions">
+    <app-back-btn></app-back-btn>
 
-      <button type="button" mat-button-base mat-stroked-button *ngIf="!isNew" (click)="deleteCategory()">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </div>
-
-    <div *ngIf="isNew; else edit">
-      <p class="section-title">Where do you spend your money?</p>
-    </div>
-
-    <ng-template #edit>
-      <p class="section-title">Edit expense category</p>
-    </ng-template>
+    <button type="button" mat-button-base mat-stroked-button *ngIf="!isNew" (click)="deleteCategory()">
+      <mat-icon>delete</mat-icon>
+    </button>
   </div>
+
+  <div *ngIf="isNew; else edit">
+    <p class="section-title">Where do you spend your money?</p>
+  </div>
+
+  <ng-template #edit>
+    <p class="section-title">Edit expense category</p>
+  </ng-template>
 
   <div class="body">
     <div class="upload-wrapper">
@@ -41,13 +39,6 @@
       <input matInput placeholder="Category name:" formControlName="name" required>
       <mat-error>
         <app-validator-message [field]="form.get('name')"></app-validator-message>
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input matInput placeholder="Budget:" formControlName="budget" required>
-      <mat-error>
-        <app-validator-message [field]="form.get('budget')"></app-validator-message>
       </mat-error>
     </mat-form-field>
   </div>
