@@ -9,5 +9,6 @@ router.get('/:id', passport.authenticate('jwt', {session: false}), controller.ge
 router.delete('/:id', passport.authenticate('jwt', {session: false}), controller.remove);
 router.post('/', passport.authenticate('jwt', {session: false}), upload.single('image'), controller.create);
 router.patch('/:id', passport.authenticate('jwt', {session: false}), upload.single('image'), controller.update);
+router.patch('/add-income/:id', passport.authenticate('jwt', {session: false}), controller.addIncome);
 
 module.exports = router;

@@ -46,6 +46,10 @@ export class WalletsService {
     return this.http.patch<Wallet>(`/api/wallets/${id}`, formData);
   }
 
+  addIncome(wallet: Wallet): Observable<Wallet> {
+    return this.http.patch<Wallet>(`/api/wallets/add-income/${wallet._id}`, wallet);
+  }
+
   delete(id: string): Observable<Message> {
     return this.http.delete<Message>(`/api/wallets/${id}`);
   }

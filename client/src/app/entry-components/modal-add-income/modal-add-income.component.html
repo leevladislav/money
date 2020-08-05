@@ -5,9 +5,9 @@
 
   <div class="wallets-layout">
     <div *ngFor="let wallet of data.wallets"
-         (click)="selectWallet(wallet._id)"
+         (click)="selectWallet(wallet)"
          class="layout-item"
-         [class.selected]="selectedWalletId === wallet._id">
+         [class.selected]="selectedWallet?._id === wallet._id">
 
       <p class="title">{{wallet.name}}</p>
 
@@ -21,12 +21,21 @@
     </div>
   </div>
 
+  <form [formGroup]="form" (ngSubmit)="addIncome()">
+    <mat-form-field>
+      <input matInput placeholder="Account balance:" formControlName="budget" required>
+      <mat-error>
+        <app-validator-message [field]="form.get('budget')"></app-validator-message>
+      </mat-error>
+    </mat-form-field>
+  </form>
+
   <mat-dialog-actions align="center">
     <button mat-raised-button [mat-dialog-close]="false">
       Cancel
     </button>
 
-    <button mat-raised-button color="primary" (click)="addIncome()">
+    <button mat-raised-button color="primary" [disabled]="form.disabled" (click)="addIncome()">
       Add
     </button>
   </mat-dialog-actions>
