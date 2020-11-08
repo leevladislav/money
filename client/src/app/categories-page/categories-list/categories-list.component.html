@@ -6,7 +6,7 @@
 </div>
 
 <div *ngIf="categories$ | async as categories; else loader">
-  <div class="categories-layout" *ngIf="categories.length !==0">
+  <div class="cards-list categories-layout" *ngIf="categories.length !==0">
     <a [routerLink]="[category._id, 'edit']"
        *ngFor="let category of categories" class="layout-item">
 

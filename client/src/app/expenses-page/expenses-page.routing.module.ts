@@ -15,7 +15,7 @@ const routes: Routes = [
         component: ExpensesListComponent
       },
       {
-        path: 'create',
+        path: ':id/edit',
         component: ExpenseComponent
       },
       {
