@@ -23,20 +23,20 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
     public modal: MatDialogRef<ModalAddIncomeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private walletsService: WalletsService,
-    private openModalService: OpenModalInfoService,
+    private openModalService: OpenModalInfoService
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initForm();
   }
 
-  initForm() {
+  initForm(): void {
     this.form = this.fb.group({budget: [null, [Validators.required]]});
     this.form.disable();
   }
 
-  selectWallet(wallet) {
+  selectWallet(wallet: Wallet): void {
     if (this.selectedWallet && this.selectedWallet._id === wallet._id) {
       this.form.reset();
       this.form.disable();
@@ -49,7 +49,7 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
     this.selectedWallet = wallet;
   }
 
-  addIncome() {
+  addIncome(): void {
     const data = {
       _id: this.selectedWallet._id,
       name: this.selectedWallet.name,
@@ -58,18 +58,17 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
 
     this.form.disable();
 
-    const walletsSub = this.walletsService.addIncome(data)
-      .subscribe(
-        wallet => {
-          this.openModalService.openModal(wallet, null, 'Income successfully added');
-          this.updateAllWallets();
-          this.form.enable();
-          this.modal.close();
-        },
-        error => {
-          this.openModalService.openModal(null, error.error.message);
-          this.form.enable();
-        });
+    const walletsSub = this.walletsService.addIncome(data).subscribe(
+      wallet => {
+        this.openModalService.openModal(wallet, null, 'Income successfully added');
+        this.updateAllWallets();
+        this.form.enable();
+        this.modal.close();
+      },
+      error => {
+        this.openModalService.openModal(null, error.error.message);
+        this.form.enable();
+      });
 
     this.subscriptions.push(walletsSub);
   }
@@ -81,7 +80,7 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
     this.subscriptions.push(fetchWalletsSub);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     unsubscribe(this.subscriptions);
   }
 }

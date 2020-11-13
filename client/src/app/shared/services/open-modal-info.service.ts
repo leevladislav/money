@@ -28,10 +28,10 @@ export class OpenModalInfoService implements OnDestroy {
         autoFocus: false
       });
 
-      const dialogSub = dialogRef.afterClosed()
+      const dialogRefSub = dialogRef.afterClosed()
         .subscribe(() => this.router.navigate([router]));
 
-      this.subscriptions.push(dialogSub);
+      this.subscriptions.push(dialogRefSub);
     }
 
     if (result && !router) {

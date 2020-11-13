@@ -80,11 +80,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
       autoFocus: false
     });
 
-    const dialogSub = dialogRef.afterClosed()
+    const dialogRefSub = dialogRef.afterClosed()
       .pipe(filter((result) => result))
       .subscribe(() => this.deleteCategory(this.category._id));
 
-    this.subscriptions.push(dialogSub);
+    this.subscriptions.push(dialogRefSub);
   }
 
   deleteCategory(categoryId) {

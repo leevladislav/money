@@ -8,26 +8,16 @@ import {Wallet} from '../../shared/interfaces/wallets.interfaces';
   styleUrls: ['./modal-select-wallet.component.scss']
 })
 export class ModalSelectWalletComponent implements OnInit {
-  selectedWallet: Wallet;
-
   constructor(
     public modal: MatDialogRef<ModalSelectWalletComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  selectWallet(wallet) {
-    if (this.selectedWallet && this.selectedWallet._id === wallet._id) {
-      this.selectedWallet = null;
-
-      return;
-    }
-
-    this.selectedWallet = wallet;
-
-    // _id: this.selectedWallet._id,
+  selectWallet(wallet: Wallet): void {
+    this.modal.close(wallet);
   }
 }

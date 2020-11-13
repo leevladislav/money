@@ -1,15 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Message, Wallet} from '../interfaces';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {WalletCreateParams, WalletUpdateParams} from '../interfaces/wallets.interfaces';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {Wallet, WalletCreateParams, WalletUpdateParams} from '../interfaces/wallets.interfaces';
+import {Message} from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WalletsService {
   wallets$ = new BehaviorSubject<Wallet[]>([]);
-  onUpdateWallets$ = new Subject<boolean>();
 
   constructor(private http: HttpClient) {
   }

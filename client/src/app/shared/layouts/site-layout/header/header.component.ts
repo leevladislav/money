@@ -1,13 +1,14 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {WalletsService} from '../../../services/wallets.service';
-import {Category, Wallet} from '../../../interfaces';
+import {Category} from '../../../interfaces';
 import {CategoriesService} from '../../../services/categories.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ModalAddIncomeComponent} from '../../../../entry-components/modal-add-income/modal-add-income.component';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {unsubscribe} from '../../../../utils/unsubscriber';
+import {Wallet} from '../../../interfaces/wallets.interfaces';
 
 @Component({
   selector: 'app-header',

@@ -25,7 +25,11 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.initForm();
+  }
+
+  initForm(): void {
     this.form = this.fb.group({
       name: [null, [Validators.required]],
       email: [null, [Validators.required, Validators.email]],
@@ -33,7 +37,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSubmit() {
+  onSubmit(): void {
     this.form.disable();
 
     if (this.form.invalid) {
@@ -53,7 +57,7 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
     this.subscriptions.push(registerSub);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     unsubscribe(this.subscriptions);
   }
 }

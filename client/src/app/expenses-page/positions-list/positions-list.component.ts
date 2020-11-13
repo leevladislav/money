@@ -54,11 +54,11 @@ export class PositionsListComponent implements OnInit, OnDestroy {
       autoFocus: false
     });
 
-    const dialogSub = dialogRef.afterClosed()
+    const dialogRefSub = dialogRef.afterClosed()
       .pipe(filter((result) => result))
       .subscribe(() => this.deletePosition(position));
 
-    this.subscriptions.push(dialogSub);
+    this.subscriptions.push(dialogRefSub);
   }
 
   deletePosition(position) {

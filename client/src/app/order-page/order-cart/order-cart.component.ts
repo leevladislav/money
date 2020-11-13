@@ -42,11 +42,11 @@ export class OrderCartComponent implements OnInit, OnDestroy {
       autoFocus: false
     });
 
-    const dialogSub = dialogRef.afterClosed()
+    const dialogRefSub = dialogRef.afterClosed()
       .pipe(filter((result) => result))
       .subscribe(() => this.orderService.remove(orderPosition));
 
-    this.subscriptions.push(dialogSub);
+    this.subscriptions.push(dialogRefSub);
   }
 
   submit() {

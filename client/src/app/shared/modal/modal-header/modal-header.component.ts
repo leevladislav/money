@@ -11,6 +11,6 @@ export class ModalHeaderComponent implements OnInit {
     constructor() {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
     }
 }

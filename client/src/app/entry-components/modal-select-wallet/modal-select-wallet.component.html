@@ -1,13 +1,13 @@
 <app-modal-header [title]="data.title"></app-modal-header>
 
-<div class="dialog-content modal-select-wallet">
+<div class="dialog-content modal-wallets-list">
   <p class="text-center">{{data.type}}</p>
 
-  <div class="cards-list wallets-layout">
+  <div class="cards-list modal-select-wallet-layout">
     <div *ngFor="let wallet of data.wallets"
          (click)="selectWallet(wallet)"
          class="layout-item"
-         [class.selected]="selectedWallet?._id === wallet._id">
+         [class.disabled]="wallet.budget < 1">
 
       <p class="title">{{wallet.name}}</p>
 
@@ -18,6 +18,8 @@
           <img src="assets/images/wallet-default.jpeg" alt="wallet image">
         </ng-template>
       </div>
+
+      <p class="budget">{{wallet.budget}}</p>
     </div>
   </div>
 

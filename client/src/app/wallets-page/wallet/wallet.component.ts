@@ -1,6 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Wallet} from '../../shared/interfaces/wallets.interfaces';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
 import {MatDialog} from '@angular/material/dialog';
@@ -9,7 +8,7 @@ import {filter, switchMap} from 'rxjs/operators';
 import {of, Subscription} from 'rxjs';
 import {ModalConfirmComponent} from '../../entry-components/modal-confirm/modal-confirm.component';
 import {unsubscribe} from '../../utils/unsubscriber';
-import {WalletCreateParams, WalletUpdateParams} from '../../shared/interfaces/wallets.interfaces';
+import {Wallet, WalletCreateParams, WalletUpdateParams} from '../../shared/interfaces/wallets.interfaces';
 
 @Component({
   selector: 'app-wallet',
@@ -96,11 +95,11 @@ export class WalletComponent implements OnInit, OnDestroy {
       autoFocus: false
     });
 
-    const dialogSub = dialogRef.afterClosed()
+    const dialogRefSub = dialogRef.afterClosed()
       .pipe(filter((result) => result))
       .subscribe(() => this.deleteWallet());
 
-    this.subscriptions.push(dialogSub);
+    this.subscriptions.push(dialogRefSub);
   }
 
   deleteWallet(): void {

@@ -26,11 +26,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
-    this.form = this.fb.group({
-      email: [null, [Validators.required, Validators.email]],
-      password: [null, [Validators.required, Validators.minLength(6)]],
-    });
+  ngOnInit(): void {
+    this.initForm();
 
     const routeSub = this.route.queryParams
       .subscribe((params: Params) => {
@@ -47,7 +44,14 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.subscriptions.push(routeSub);
   }
 
-  onSubmit() {
+  initForm(): void {
+    this.form = this.fb.group({
+      email: [null, [Validators.required, Validators.email]],
+      password: [null, [Validators.required, Validators.minLength(6)]],
+    });
+  }
+
+  onSubmit(): void {
     this.form.disable();
 
     if (this.form.invalid) {
@@ -67,7 +71,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.subscriptions.push(loginSub);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     unsubscribe(this.subscriptions);
   }
 }
