@@ -2,9 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../shared/services/auth.service';
 import {Router} from '@angular/router';
-import {ModalInfoComponent} from '../entry-components/modal-info/modal-info.component';
-import {MatDialog} from '@angular/material/dialog';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {Subscription} from 'rxjs';
+import {unsubscribe} from '../utils/unsubscriber';
+import {OpenModalInfoService} from '../shared/services/open-modal-info.service';
 
 @Component({
   selector: 'app-register-page',
@@ -13,12 +13,15 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 })
 export class RegisterPageComponent implements OnInit, OnDestroy {
   form: FormGroup;
+  hide = true;
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
-    public dialog: MatDialog
+    private openModalService: OpenModalInfoService
   ) {
   }
 
@@ -39,30 +42,18 @@ export class RegisterPageComponent implements OnInit, OnDestroy {
 
     const data = this.form.value;
 
-    this.auth.register(data)
-      .pipe(untilDestroyed(this))
+    const registerSub = this.auth.register(data)
       .subscribe(
-        () => {
-          this.router.navigate(['/login'], {
-            queryParams: {
-              registered: true
-            }
-          });
-        },
+        () => this.router.navigate(['/login'], {queryParams: {registered: true}}),
         (error) => {
-          this.dialog.open(ModalInfoComponent, {
-            data: {
-              title: 'Error!',
-              message: error.error.message,
-            },
-            panelClass: ['primary-modal'],
-            autoFocus: false,
-          });
-
+          this.openModalService.openModal(null, error.error.message);
           this.form.enable();
         });
+
+    this.subscriptions.push(registerSub);
   }
 
   ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }

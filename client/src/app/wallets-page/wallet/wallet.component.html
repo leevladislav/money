@@ -1,12 +1,12 @@
+<div class="heading-page-actions">
+  <app-back-btn></app-back-btn>
+
+  <button type="button" mat-button-base mat-stroked-button *ngIf="!isNew" (click)="onDeleteWallet()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</div>
+
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="wallet-layout">
-  <div class="heading-page-actions">
-    <app-back-btn></app-back-btn>
-
-    <button type="button" mat-button-base mat-stroked-button *ngIf="!isNew" (click)="deleteWallet()">
-      <mat-icon>delete</mat-icon>
-    </button>
-  </div>
-
   <div *ngIf="isNew; else edit">
     <p class="section-title">Where do you keep your money?</p>
   </div>

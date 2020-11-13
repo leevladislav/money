@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<div *ngIf="wallets$ | async as wallets">
+<div *ngIf="wallets.length">
   <div class="cards-list wallets-layout">
     <div [routerLink]="[wallet._id, 'edit']" *ngFor="let wallet of wallets" class="layout-item">
 

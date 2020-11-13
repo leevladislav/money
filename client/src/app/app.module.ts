@@ -17,6 +17,7 @@ import {ModalCropComponent} from './entry-components/modal-crop/modal-crop.compo
 import {ModalAddIncomeComponent} from './entry-components/modal-add-income/modal-add-income.component';
 import {ImageCropperModule} from 'ngx-image-cropper';
 import {HeaderComponent} from './shared/layouts/site-layout/header/header.component';
+import {ModalSelectWalletComponent} from './entry-components/modal-select-wallet/modal-select-wallet.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {HeaderComponent} from './shared/layouts/site-layout/header/header.compon
     ModalConfirmComponent,
     ModalCropComponent,
     HeaderComponent,
-    ModalAddIncomeComponent
+    ModalAddIncomeComponent,
+    ModalSelectWalletComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +51,8 @@ import {HeaderComponent} from './shared/layouts/site-layout/header/header.compon
     ModalInfoComponent,
     ModalConfirmComponent,
     ModalCropComponent,
-    ModalAddIncomeComponent
+    ModalAddIncomeComponent,
+    ModalSelectWalletComponent
   ],
   bootstrap: [AppComponent]
 })

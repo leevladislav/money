@@ -16,14 +16,6 @@ export interface Category {
   _id?: string;
 }
 
-export interface Wallet {
-  name: string;
-  budget: number;
-  imageSrc?: string;
-  user?: string;
-  _id?: string;
-}
-
 export interface Position {
   name: string;
   description: string;

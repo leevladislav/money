@@ -1,7 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OrdersService} from '../shared/services/orders.service';
 import {Filter, Order} from '../shared/interfaces';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {Subscription} from 'rxjs';
+import {unsubscribe} from '../utils/unsubscriber';
 
 const STEP = 4;
 
@@ -19,6 +20,8 @@ export class HistoryPageComponent implements OnInit, OnDestroy {
   reloading = false;
   noMoreOrders = false;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private ordersService: OrdersService) {
   }
 
@@ -33,14 +36,15 @@ export class HistoryPageComponent implements OnInit, OnDestroy {
       limit: this.limit
     });
 
-    this.ordersService.fetch(params)
-      .pipe(untilDestroyed(this))
+    const getOrdersSub = this.ordersService.fetch(params)
       .subscribe(orders => {
         this.orders = this.orders.concat(orders);
         this.noMoreOrders = orders.length < STEP;
         this.loading = false;
         this.reloading = false;
       });
+
+    this.subscriptions.push(getOrdersSub);
   }
 
   loadMore() {
@@ -58,5 +62,6 @@ export class HistoryPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }

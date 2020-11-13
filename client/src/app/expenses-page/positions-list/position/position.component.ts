@@ -4,7 +4,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PositionsService} from '../../../shared/services/positions.service';
 import {ActivatedRoute} from '@angular/router';
 import {OpenModalInfoService} from '../../../shared/services/open-modal-info.service';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {Subscription} from 'rxjs';
+import {unsubscribe} from '../../../utils/unsubscriber';
 
 @Component({
   selector: 'app-position',
@@ -17,6 +18,8 @@ export class PositionComponent implements OnInit, OnDestroy {
   categoriesId = null;
   positionsId = null;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private fb: FormBuilder,
     private positionsService: PositionsService,
@@ -28,31 +31,37 @@ export class PositionComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initForm();
 
-    this.route.params
-      .pipe(untilDestroyed(this))
+    const routeSub = this.route.params
       .subscribe(result => {
         if (result) {
           this.categoriesId = result.id;
           this.positionsId = result.positionId;
 
           if (this.positionsId) {
-            this.positionsService.getOnePosition(this.positionsId)
-              .pipe(untilDestroyed(this))
-              .subscribe((position: Position) => {
-                if (position) {
-                  this.position = {...position};
-
-                  this.form.patchValue({
-                    name: this.position.name,
-                    description: this.position.description,
-                    oldCost: this.position.oldCost,
-                    cost: this.position.cost
-                  });
-                }
-              });
+            this.getOnePosition();
           }
         }
       });
+
+    this.subscriptions.push(routeSub);
+  }
+
+  getOnePosition() {
+    const getOnePositionSub = this.positionsService.getOnePosition(this.positionsId)
+      .subscribe((position: Position) => {
+        if (position) {
+          this.position = {...position};
+
+          this.form.patchValue({
+            name: this.position.name,
+            description: this.position.description,
+            oldCost: this.position.oldCost,
+            cost: this.position.cost
+          });
+        }
+      });
+
+    this.subscriptions.push(getOnePositionSub);
   }
 
   initForm() {
@@ -83,8 +92,7 @@ export class PositionComponent implements OnInit, OnDestroy {
     if (this.positionsId) {
       newPosition._id = this.positionsId;
 
-      this.positionsService.update(newPosition)
-        .pipe(untilDestroyed(this))
+      const updatePositionSub = this.positionsService.update(newPosition)
         .subscribe(
           position => {
             this.openModalService.openModal(position, null, 'Product successfully edited', 'categories');
@@ -92,9 +100,10 @@ export class PositionComponent implements OnInit, OnDestroy {
           error => this.openModalService.openModal(null, error.error.message),
           completed
         );
+
+      this.subscriptions.push(updatePositionSub);
     } else {
-      this.positionsService.create(newPosition)
-        .pipe(untilDestroyed(this))
+      const createPositionSub = this.positionsService.create(newPosition)
         .subscribe(
           position => {
             this.openModalService.openModal(position, null, 'Product successfully added', 'categories');
@@ -102,9 +111,12 @@ export class PositionComponent implements OnInit, OnDestroy {
           error => this.openModalService.openModal(null, error),
           completed
         );
+
+      this.subscriptions.push(createPositionSub);
     }
   }
 
   ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }

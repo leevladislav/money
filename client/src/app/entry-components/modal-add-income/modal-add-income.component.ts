@@ -3,8 +3,9 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {WalletsService} from '../../shared/services/wallets.service';
 import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {Wallet} from '../../shared/interfaces';
+import {Wallet} from '../../shared/interfaces/wallets.interfaces';
+import {Subscription} from 'rxjs';
+import {unsubscribe} from '../../utils/unsubscriber';
 
 @Component({
   selector: 'app-modal-add-income',
@@ -14,6 +15,8 @@ import {Wallet} from '../../shared/interfaces';
 export class ModalAddIncomeComponent implements OnInit, OnDestroy {
   form: FormGroup;
   selectedWallet: Wallet;
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -55,12 +58,11 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
 
     this.form.disable();
 
-    this.walletsService.addIncome(data)
-      .pipe(untilDestroyed(this))
+    const walletsSub = this.walletsService.addIncome(data)
       .subscribe(
         wallet => {
-          this.walletsService.onUpdateWallets$.next(true);
           this.openModalService.openModal(wallet, null, 'Income successfully added');
+          this.updateAllWallets();
           this.form.enable();
           this.modal.close();
         },
@@ -68,8 +70,18 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
           this.openModalService.openModal(null, error.error.message);
           this.form.enable();
         });
+
+    this.subscriptions.push(walletsSub);
+  }
+
+  updateAllWallets(): void {
+    const fetchWalletsSub = this.walletsService.fetch()
+      .subscribe((wallets: Wallet[]) => this.walletsService.throwWallets(wallets));
+
+    this.subscriptions.push(fetchWalletsSub);
   }
 
   ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }

@@ -1,14 +1,15 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Wallet} from '../../shared/interfaces';
+import {Wallet} from '../../shared/interfaces/wallets.interfaces';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
 import {MatDialog} from '@angular/material/dialog';
 import {WalletsService} from '../../shared/services/wallets.service';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {switchMap} from 'rxjs/operators';
-import {of} from 'rxjs';
+import {filter, switchMap} from 'rxjs/operators';
+import {of, Subscription} from 'rxjs';
 import {ModalConfirmComponent} from '../../entry-components/modal-confirm/modal-confirm.component';
+import {unsubscribe} from '../../utils/unsubscriber';
+import {WalletCreateParams, WalletUpdateParams} from '../../shared/interfaces/wallets.interfaces';
 
 @Component({
   selector: 'app-wallet',
@@ -23,6 +24,8 @@ export class WalletComponent implements OnInit, OnDestroy {
   isNew = true;
   wallet: Wallet;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -33,12 +36,12 @@ export class WalletComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initForm();
     this.getWallet();
   }
 
-  initForm() {
+  initForm(): void {
     this.form = this.fb.group({
       name: [null, [Validators.required]],
       budget: [null, [Validators.required]]
@@ -47,9 +50,8 @@ export class WalletComponent implements OnInit, OnDestroy {
     this.form.disable();
   }
 
-  getWallet() {
-    this.route.params.pipe(
-      untilDestroyed(this),
+  getWallet(): void {
+    const routeSub = this.route.params.pipe(
       switchMap(
         (params: Params) => {
           if (params.id) {
@@ -64,26 +66,27 @@ export class WalletComponent implements OnInit, OnDestroy {
       (wallet: Wallet) => {
         if (wallet) {
           this.wallet = wallet;
+          this.imagePreview = wallet.imageSrc;
 
           this.form.patchValue({
             name: wallet.name,
             budget: wallet.budget
           });
-
-          this.imagePreview = wallet.imageSrc;
         }
 
         this.form.enable();
       },
       error => this.openModalService.openModal(null, error.error.message)
     );
+
+    this.subscriptions.push(routeSub);
   }
 
-  triggerClick() {
+  triggerClick(): void {
     this.inputRef.nativeElement.click();
   }
 
-  deleteWallet() {
+  onDeleteWallet(): void {
     const dialogRef = this.dialog.open(ModalConfirmComponent, {
       data: {
         title: 'Attention!',
@@ -93,67 +96,99 @@ export class WalletComponent implements OnInit, OnDestroy {
       autoFocus: false
     });
 
-    dialogRef.afterClosed()
-      .pipe(untilDestroyed(this))
-      .subscribe((result) => {
-        if (result) {
-          this.walletsService.delete(this.wallet._id)
-            .pipe(untilDestroyed(this))
-            .subscribe(
-              response => {
-                this.openModalService.openModal(response, null, response.message, '/wallets');
-                this.walletsService.onUpdateWallets$.next(true);
-              },
-              error => this.openModalService.openModal(null, error.error.message)
-            );
-        }
-      });
+    const dialogSub = dialogRef.afterClosed()
+      .pipe(filter((result) => result))
+      .subscribe(() => this.deleteWallet());
+
+    this.subscriptions.push(dialogSub);
   }
 
-  onFileUpload(event: any) {
+  deleteWallet(): void {
+    this.walletsService.delete(this.wallet._id)
+      .subscribe(
+        response => {
+          this.updateAllWallets();
+          this.openModalService.openModal(response, null, response.message, '/wallets');
+        },
+        error => this.openModalService.openModal(null, error.error.message)
+      );
+  }
+
+  onFileUpload(event: any): void {
     const file = event.target.files[0];
+    const reader = new FileReader();
     this.image = file;
 
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.imagePreview = reader.result;
-    };
-
+    reader.onload = () => this.imagePreview = reader.result;
     reader.readAsDataURL(file);
   }
 
-  onSubmit() {
-    let obs$;
-    let messageSuccess = 'Wallet successfully edited';
-
+  onSubmit(): void {
     if (this.form.invalid) {
       return this.form.markAllAsTouched();
     }
 
+
     this.form.disable();
 
-    if (this.isNew) {
-      messageSuccess = 'Wallet successfully added';
-      obs$ = this.walletsService.create(this.form.value.name, this.form.value.budget, this.image);
-    } else {
-      obs$ = this.walletsService.update(this.wallet._id, this.form.value.name, this.form.value.budget, this.image);
-    }
+    this.isNew ? this.createWallet() : this.updateWallet();
+  }
 
-    obs$.pipe(untilDestroyed(this))
+  createWallet(): void {
+    const data: WalletCreateParams = {
+      name: this.form.value.name,
+      budget: this.form.value.budget,
+      image: this.image || null
+    };
+
+    const createWalletSub = this.walletsService.create(data)
       .subscribe(
         wallet => {
           this.wallet = wallet;
-          this.openModalService.openModal(wallet, null, messageSuccess, '/wallets');
+          this.openModalService.openModal(wallet, null, 'Wallet successfully added', '/wallets');
           this.form.enable();
-          this.walletsService.onUpdateWallets$.next(true);
+          this.updateAllWallets();
         },
         error => {
-          this.openModalService.openModal(null, error.error.message);
           this.form.enable();
+          this.openModalService.openModal(null, error.error.message);
         });
+
+    this.subscriptions.push(createWalletSub);
   }
 
-  ngOnDestroy() {
+  updateWallet(): void {
+    const data: WalletUpdateParams = {
+      id: this.wallet._id || null,
+      name: this.form.value.name,
+      budget: this.form.value.budget,
+      image: this.image || null
+    };
+
+    const updateWalletSub = this.walletsService.update(data)
+      .subscribe(
+        wallet => {
+          this.wallet = wallet;
+          this.openModalService.openModal(wallet, null, 'Wallet successfully edited', '/wallets');
+          this.form.enable();
+          this.updateAllWallets();
+        },
+        error => {
+          this.form.enable();
+          this.openModalService.openModal(null, error.error.message);
+        });
+
+    this.subscriptions.push(updateWalletSub);
+  }
+
+  updateAllWallets(): void {
+    const fetchWalletsSub = this.walletsService.fetch()
+      .subscribe((wallets: Wallet[]) => this.walletsService.throwWallets(wallets));
+
+    this.subscriptions.push(fetchWalletsSub);
+  }
+
+  ngOnDestroy(): void {
+    unsubscribe(this.subscriptions);
   }
 }

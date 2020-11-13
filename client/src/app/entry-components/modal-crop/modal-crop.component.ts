@@ -49,7 +49,7 @@ export class ModalCropComponent implements OnInit {
     }
 
     loadImageFailed() {
-        this.loadFailed = 'Пожалуйста, попробуйте снова.';
+        this.loadFailed = 'Please, try again.';
     }
 
     cropImage() {

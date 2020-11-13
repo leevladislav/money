@@ -5,7 +5,6 @@ import {Observable} from 'rxjs';
 import {Position} from '../../shared/interfaces';
 import {map, switchMap} from 'rxjs/operators';
 import {OrderService} from '../order.service';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {MatDialog} from '@angular/material/dialog';
 import {ModalInfoComponent} from '../../entry-components/modal-info/modal-info.component';
 
@@ -27,7 +26,6 @@ export class OrderPositionsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.positions$ = this.route.params.pipe(
-      untilDestroyed(this),
       switchMap(
         (params: Params) => {
           if (params.id) {

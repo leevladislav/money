@@ -1,16 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
-import {User} from '../../interfaces';
+import {User, Wallet} from '../../interfaces';
 import {ProfileService} from '../../services/profile.service';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
+import {WalletsService} from '../../services/wallets.service';
+import {unsubscribe} from '../../../utils/unsubscriber';
 
 @Component({
   selector: 'app-site-layout',
   templateUrl: './site-layout.component.html',
   styleUrls: ['./site-layout.component.scss']
 })
-export class SiteLayoutComponent implements OnInit {
+export class SiteLayoutComponent implements OnInit, OnDestroy {
   links = [
     {url: '/expenses', name: 'Expenses'},
     {url: '/wallets', name: 'Wallets'},
@@ -24,10 +26,13 @@ export class SiteLayoutComponent implements OnInit {
   isOpenedSidebar = true;
   innerWidth;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private auth: AuthService,
     private router: Router,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private walletsService: WalletsService
   ) {
   }
 
@@ -38,7 +43,19 @@ export class SiteLayoutComponent implements OnInit {
       this.isOpenedSidebar = false;
     }
 
+    this.getProfile();
+    this.getWallets();
+  }
+
+  getProfile() {
     this.profile$ = this.profileService.getProfile();
+  }
+
+  getWallets() {
+    const fetchWalletsSub = this.walletsService.fetch()
+      .subscribe((wallets: Wallet[]) => this.walletsService.throwWallets(wallets));
+
+    this.subscriptions.push(fetchWalletsSub);
   }
 
   onToggleSidebar(event) {
@@ -47,7 +64,12 @@ export class SiteLayoutComponent implements OnInit {
 
   logout(event: Event) {
     event.preventDefault();
+
     this.auth.logout();
     this.router.navigate(['/login']);
+  }
+
+  ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }

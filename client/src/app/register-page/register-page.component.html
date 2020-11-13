@@ -18,7 +18,10 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput placeholder="Password:" formControlName="password" required>
+        <input matInput placeholder="Password:" formControlName="password" [type]="hide ? 'password' : 'text'" required>
+        <button mat-icon-button matSuffix (click)="hide = !hide" type="button" class="toggle-password">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
         <mat-error>
           <app-validator-message [field]="form.get('password')"></app-validator-message>
         </mat-error>

@@ -2,9 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../shared/services/auth.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {ModalInfoComponent} from '../entry-components/modal-info/modal-info.component';
-import {MatDialog} from '@angular/material/dialog';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {unsubscribe} from '../utils/unsubscriber';
+import {Subscription} from 'rxjs';
+import {OpenModalInfoService} from '../shared/services/open-modal-info.service';
 
 @Component({
   selector: 'app-login-page',
@@ -13,13 +13,16 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 })
 export class LoginPageComponent implements OnInit, OnDestroy {
   form: FormGroup;
+  hide = true;
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
     private route: ActivatedRoute,
-    public dialog: MatDialog
+    private openModalService: OpenModalInfoService
   ) {
   }
 
@@ -29,9 +32,9 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       password: [null, [Validators.required, Validators.minLength(6)]],
     });
 
-    this.route.queryParams
-      .pipe(untilDestroyed(this))
+    const routeSub = this.route.queryParams
       .subscribe((params: Params) => {
+        // TODO: remove check
         if (params.registered) {
           console.log('Registration success');
         } else if (params.accessDenied) {
@@ -40,6 +43,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
           console.log('Please, login system back');
         }
       });
+
+    this.subscriptions.push(routeSub);
   }
 
   onSubmit() {
@@ -51,24 +56,18 @@ export class LoginPageComponent implements OnInit, OnDestroy {
 
     const data = this.form.value;
 
-    this.auth.login(data)
-      .pipe(untilDestroyed(this))
+    const loginSub = this.auth.login(data)
       .subscribe(
         () => this.router.navigate(['/expenses']),
         (error) => {
-          this.dialog.open(ModalInfoComponent, {
-            data: {
-              title: 'Error!',
-              message: error.error.message,
-            },
-            panelClass: ['primary-modal'],
-            autoFocus: false,
-          });
-
+          this.openModalService.openModal(null, error.error.message);
           this.form.enable();
         });
+
+    this.subscriptions.push(loginSub);
   }
 
   ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }

@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {WalletsService} from '../../shared/services/wallets.service';
-import {Wallet} from '../../shared/interfaces';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {Wallet} from '../../shared/interfaces/wallets.interfaces';
+import {unsubscribe} from '../../utils/unsubscriber';
 
 @Component({
   selector: 'app-wallets-list',
@@ -10,27 +10,25 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
   styleUrls: ['./wallets-list.component.scss']
 })
 export class WalletsListComponent implements OnInit, OnDestroy {
-  wallets$: Observable<Wallet[]>;
+  wallets: Wallet[] = [];
+
+  private subscriptions: Subscription[] = [];
 
   constructor(private walletsService: WalletsService) {
   }
 
-  ngOnInit() {
-    this.walletsService.onUpdateWallets$
-      .pipe(untilDestroyed(this))
-      .subscribe(trigger => {
-        if (trigger) {
-          this.getWallets();
-        }
-      });
-
+  ngOnInit(): void {
     this.getWallets();
   }
 
-  getWallets() {
-    this.wallets$ = this.walletsService.fetch();
+  getWallets(): void {
+    const walletsSub = this.walletsService.wallets$
+      .subscribe((wallets: Wallet[]) => this.wallets = [...wallets || []]);
+
+    this.subscriptions.push(walletsSub);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
+    unsubscribe(this.subscriptions);
   }
 }

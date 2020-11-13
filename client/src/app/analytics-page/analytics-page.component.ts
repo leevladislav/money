@@ -2,7 +2,8 @@ import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angul
 import {AnalyticsService} from '../shared/services/analytics.service';
 import {Chart} from 'chart.js';
 import {AnalyticsPage} from '../shared/interfaces';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {unsubscribe} from '../utils/unsubscriber';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-analytics-page',
@@ -15,6 +16,8 @@ export class AnalyticsPageComponent implements AfterViewInit, OnDestroy {
 
   average: number;
   pending = true;
+
+  private subscriptions: Subscription[] = [];
 
   constructor(private service: AnalyticsService) {
   }
@@ -30,30 +33,32 @@ export class AnalyticsPageComponent implements AfterViewInit, OnDestroy {
       color: 'rgb(54, 162, 235)'
     };
 
-    this.service.getAnalytics()
-      .pipe(untilDestroyed(this))
+    const getAnalyticsSub = this.service.getAnalytics()
       .subscribe((data: AnalyticsPage) => {
-      this.average = data.average;
+        this.average = data.average;
 
-      gainConfig.labels = data.chart.map(item => item.label);
-      gainConfig.data = data.chart.map(item => item.gain);
+        gainConfig.labels = data.chart.map(item => item.label);
+        gainConfig.data = data.chart.map(item => item.gain);
 
-      orderConfig.labels = data.chart.map(item => item.label);
-      orderConfig.data = data.chart.map(item => item.order);
+        orderConfig.labels = data.chart.map(item => item.label);
+        orderConfig.data = data.chart.map(item => item.order);
 
-      const gainCtx = this.gainRef.nativeElement.getContext('2d');
-      const orderCtx = this.orderRef.nativeElement.getContext('2d');
-      gainCtx.canvas.height = '300px';
-      orderCtx.canvas.height = '300px';
+        const gainCtx = this.gainRef.nativeElement.getContext('2d');
+        const orderCtx = this.orderRef.nativeElement.getContext('2d');
+        gainCtx.canvas.height = '300px';
+        orderCtx.canvas.height = '300px';
 
-      const chartGain = new Chart(gainCtx, createChartConfig(gainConfig));
-      const chartOrder = new Chart(orderCtx, createChartConfig(orderConfig));
+        const chartGain = new Chart(gainCtx, createChartConfig(gainConfig));
+        const chartOrder = new Chart(orderCtx, createChartConfig(orderConfig));
 
-      this.pending = false;
-    });
+        this.pending = false;
+      });
+
+    this.subscriptions.push(getAnalyticsSub);
   }
 
   ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }
 

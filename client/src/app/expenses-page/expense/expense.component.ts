@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Category} from '../../shared/interfaces';
 
 @Component({
   selector: 'app-expense',
@@ -6,9 +7,7 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./expense.component.scss']
 })
 export class ExpenseComponent implements OnInit {
-
-  constructor() {
-  }
+  @Input() category: Category;
 
   ngOnInit() {
   }

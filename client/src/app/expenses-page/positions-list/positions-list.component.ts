@@ -1,10 +1,12 @@
 import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {PositionsService} from '../../shared/services/positions.service';
 import {Position} from '../../shared/interfaces';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ModalConfirmComponent} from '../../entry-components/modal-confirm/modal-confirm.component';
 import {MatDialog} from '@angular/material/dialog';
 import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
+import {Subscription} from 'rxjs';
+import {unsubscribe} from '../../utils/unsubscriber';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-positions-list',
@@ -18,6 +20,8 @@ export class PositionsListComponent implements OnInit, OnDestroy {
   positions: Position[] = [];
   loading = false;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private dialog: MatDialog,
     private positionsService: PositionsService,
@@ -28,12 +32,13 @@ export class PositionsListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loading = true;
 
-    this.positionsService.fetch(this.categoryId)
-      .pipe(untilDestroyed(this))
+    const positionsSub = this.positionsService.fetch(this.categoryId)
       .subscribe(positions => {
         this.positions = positions;
         this.loading = false;
       });
+
+    this.subscriptions.push(positionsSub);
   }
 
   onDeletePosition(event: Event, position: Position) {
@@ -49,23 +54,29 @@ export class PositionsListComponent implements OnInit, OnDestroy {
       autoFocus: false
     });
 
-    dialogRef.afterClosed()
-      .pipe(untilDestroyed(this))
-      .subscribe((result) => {
-        if (result) {
-          this.positionsService.delete(position).subscribe(
-            response => {
-              const index = this.positions.findIndex(p => p._id === position._id);
-              this.positions.splice(index, 1);
+    const dialogSub = dialogRef.afterClosed()
+      .pipe(filter((result) => result))
+      .subscribe(() => this.deletePosition(position));
 
-              this.openModalService.openModal(response, null, response.message)
-            },
-            error => this.openModalService.openModal(null, error.error.message),
-          );
-        }
-      });
+    this.subscriptions.push(dialogSub);
+  }
+
+  deletePosition(position) {
+    const deletePositionSub = this.positionsService.delete(position)
+      .subscribe(
+        response => {
+          const index = this.positions.findIndex(p => p._id === position._id);
+          this.positions.splice(index, 1);
+
+          this.openModalService.openModal(response, null, response.message)
+        },
+        error => this.openModalService.openModal(null, error.error.message),
+      );
+
+    this.subscriptions.push(deletePositionSub);
   }
 
   ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }

@@ -1,11 +1,13 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {WalletsService} from '../../../services/wallets.service';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {Category, Wallet} from '../../../interfaces';
 import {CategoriesService} from '../../../services/categories.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ModalAddIncomeComponent} from '../../../../entry-components/modal-add-income/modal-add-income.component';
+import {Subscription} from 'rxjs';
+import {filter} from 'rxjs/operators';
+import {unsubscribe} from '../../../../utils/unsubscriber';
 
 @Component({
   selector: 'app-header',
@@ -21,6 +23,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   expenses = 0;
   wallets: Wallet[];
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private media: MediaMatcher,
     private walletsService: WalletsService,
@@ -29,60 +33,50 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
-    this.walletsService.onUpdateWallets$
-      .pipe(untilDestroyed(this))
-      .subscribe(trigger => {
-        if (trigger) {
-          this.getWallets();
-        }
-      });
+  ngOnInit(): void {
+    const categoriesUpdateSub = this.categoriesService.onUpdateCategories$
+      .pipe(filter((trigger) => trigger))
+      .subscribe(() => this.getExpenses());
 
-    this.categoriesService.onUpdateCategories$
-      .pipe(untilDestroyed(this))
-      .subscribe(trigger => {
-        if (trigger) {
-          this.getExpenses();
-        }
-      });
+    this.subscriptions.push(categoriesUpdateSub);
 
     this.getWallets();
     this.getExpenses();
     this.mobileWidthListener();
   }
 
-  getWallets() {
-    this.walletsService.fetch()
-      .pipe(untilDestroyed(this))
+  getWallets(): void {
+    const walletsSub = this.walletsService.wallets$
       .subscribe((wallets: Wallet[]) => {
-        if (wallets.length) {
-          this.wallets = [...wallets];
-          this.countBalance(wallets);
-        }
+        this.wallets = [...wallets || []];
+        this.countBalance();
       });
+
+    this.subscriptions.push(walletsSub);
   }
 
-  countBalance(wallets) {
-    this.balance = wallets.reduce((total, item) => total += item.budget, 0);
+  countBalance(): void {
+    this.balance = this.wallets.reduce((total, item) => total += item.budget, 0);
   }
 
-  getExpenses() {
-    this.categoriesService.fetch()
-      .pipe(untilDestroyed(this))
+  getExpenses(): void {
+    const categoriesSub = this.categoriesService.fetch()
       .subscribe((categories: Category[]) => {
         if (categories.length) {
           this.countExpenses(categories);
         }
       });
+
+    this.subscriptions.push(categoriesSub);
   }
 
-  countExpenses(categories) {
+  countExpenses(categories): void {
     // TODO: get real data
     this.expenses = 0;
     // this.expenses = categories.reduce((total, item) => total += item.budget, 0);
   }
 
-  mobileWidthListener() {
+  mobileWidthListener(): void {
     this.mobileQuery = this.media.matchMedia('(max-width: 1024px)');
     this.mobileQueryListener = () => {
       if (this.mobileQuery.matches && this.isOpenedSidebar) {
@@ -97,11 +91,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.mobileQuery.addEventListener('change', this.mobileQueryListener);
   }
 
-  toggleSidebar(event) {
+  toggleSidebar(event): void {
     this.onToggleSidebar.emit(event);
   }
 
-  addIncome() {
+  addIncome(): void {
     this.dialog.open(ModalAddIncomeComponent, {
       data: {
         title: 'Adding income',
@@ -113,7 +107,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.mobileQuery.removeEventListener('change', this.mobileQueryListener);
+    unsubscribe(this.subscriptions);
   }
 }

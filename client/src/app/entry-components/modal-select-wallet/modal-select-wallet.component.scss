@@ -1,4 +1,4 @@
-.modal-add-income {
+.modal-select-wallet {
   .wallets-layout {
     .layout-item {
       margin: 10px;
@@ -17,13 +17,6 @@
         filter: grayscale(0);
         transition: all 0.2s;
       }
-    }
-  }
-
-  form {
-    .mat-form-field {
-      width: 100%;
-      margin: 20px 0;
     }
   }
 }

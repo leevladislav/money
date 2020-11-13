@@ -1,14 +1,14 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {of} from 'rxjs';
+import {of, Subscription} from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CategoriesService} from '../../shared/services/categories.service';
-import {switchMap} from 'rxjs/operators';
+import {filter, switchMap} from 'rxjs/operators';
 import {Category} from '../../shared/interfaces';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ModalConfirmComponent} from '../../entry-components/modal-confirm/modal-confirm.component';
+import {unsubscribe} from '../../utils/unsubscriber';
 
 @Component({
   selector: 'app-category',
@@ -23,6 +23,8 @@ export class CategoryComponent implements OnInit, OnDestroy {
   isNew = true;
   category: Category;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -35,11 +37,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.fb.group({name: [null, [Validators.required]]});
-
     this.form.disable();
 
-    this.route.params.pipe(
-      untilDestroyed(this),
+    const routeSub = this.route.params.pipe(
       switchMap(
         (params: Params) => {
           if (params.id) {
@@ -55,7 +55,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
         if (category) {
           this.category = category;
           this.form.patchValue({name: category.name});
-
           this.imagePreview = category.imageSrc;
         }
 
@@ -63,13 +62,15 @@ export class CategoryComponent implements OnInit, OnDestroy {
       },
       error => this.openModalService.openModal(null, error.error.message)
     );
+
+    this.subscriptions.push(routeSub);
   }
 
   triggerClick() {
     this.inputRef.nativeElement.click();
   }
 
-  deleteCategory() {
+  tryToDeleteCategory() {
     const dialogRef = this.dialog.open(ModalConfirmComponent, {
       data: {
         title: 'Attention!',
@@ -79,38 +80,37 @@ export class CategoryComponent implements OnInit, OnDestroy {
       autoFocus: false
     });
 
-    dialogRef.afterClosed()
-      .pipe(untilDestroyed(this))
-      .subscribe((result) => {
-        if (result) {
-          this.categoriesService.delete(this.category._id)
-            .pipe(untilDestroyed(this))
-            .subscribe(
-              response => {
-                this.openModalService.openModal(response, null, response.message, 'categories');
-                this.categoriesService.onUpdateCategories$.next(true);
-              },
-              error => this.openModalService.openModal(null, error.error.message)
-            );
-        }
-      });
+    const dialogSub = dialogRef.afterClosed()
+      .pipe(filter((result) => result))
+      .subscribe(() => this.deleteCategory(this.category._id));
+
+    this.subscriptions.push(dialogSub);
+  }
+
+  deleteCategory(categoryId) {
+    const deleteCategorySub = this.categoriesService.delete(categoryId)
+      .subscribe(
+        response => {
+          this.openModalService.openModal(response, null, response.message, 'categories');
+          this.categoriesService.onUpdateCategories$.next(true);
+        },
+        error => this.openModalService.openModal(null, error.error.message)
+      );
+
+    this.subscriptions.push(deleteCategorySub);
   }
 
   onFileUpload(event: any) {
     const file = event.target.files[0];
+    const reader = new FileReader();
     this.image = file;
 
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.imagePreview = reader.result;
-    };
-
+    reader.onload = () => this.imagePreview = reader.result;
     reader.readAsDataURL(file);
   }
 
   onSubmit() {
-    let obs$;
+    let submitCategorySub;
 
     if (this.form.invalid) {
       return this.form.markAllAsTouched();
@@ -119,32 +119,35 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.form.disable();
 
     if (this.isNew) {
-      obs$ = this.categoriesService.create(
+      submitCategorySub = this.categoriesService.create(
         this.form.value.name,
         this.image
       );
     } else {
-      obs$ = this.categoriesService.update(
+      submitCategorySub = this.categoriesService.update(
         this.category._id,
         this.form.value.name,
-        this.image);
+        this.image
+      );
     }
 
-    obs$.pipe(untilDestroyed(this))
-      .subscribe(
-        category => {
-          this.category = category;
-          this.openModalService.openModal(category, null, 'Category successfully edited', 'categories');
-          this.form.enable();
-          this.categoriesService.onUpdateCategories$.next(true);
-        },
-        error => {
-          this.openModalService.openModal(null, error.error.message);
-          this.form.enable();
-        }
-      );
+    submitCategorySub.subscribe(
+      category => {
+        this.category = category;
+        this.openModalService.openModal(category, null, 'Category successfully edited', 'categories');
+        this.form.enable();
+        this.categoriesService.onUpdateCategories$.next(true);
+      },
+      error => {
+        this.openModalService.openModal(null, error.error.message);
+        this.form.enable();
+      }
+    );
+
+    this.subscriptions.push(submitCategorySub);
   }
 
   ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }

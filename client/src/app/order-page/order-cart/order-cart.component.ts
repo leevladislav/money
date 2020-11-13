@@ -2,11 +2,13 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OrderService} from '../order.service';
 import {OrdersService} from '../../shared/services/orders.service';
 import {Order, OrderPosition} from '../../shared/interfaces';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
 import {Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
-import {ModalConfirmComponent} from "../../entry-components/modal-confirm/modal-confirm.component";
+import {ModalConfirmComponent} from '../../entry-components/modal-confirm/modal-confirm.component';
+import {Subscription} from 'rxjs';
+import {filter} from 'rxjs/operators';
+import {unsubscribe} from '../../utils/unsubscriber';
 
 @Component({
   selector: 'app-order-cart',
@@ -16,9 +18,11 @@ import {ModalConfirmComponent} from "../../entry-components/modal-confirm/modal-
 export class OrderCartComponent implements OnInit, OnDestroy {
   pending = false;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private dialog: MatDialog,
-    private order: OrderService,
+    private orderService: OrderService,
     private ordersService: OrdersService,
     private openModalService: OpenModalInfoService,
     private router: Router
@@ -38,31 +42,28 @@ export class OrderCartComponent implements OnInit, OnDestroy {
       autoFocus: false
     });
 
-    dialogRef.afterClosed()
-      .pipe(untilDestroyed(this))
-      .subscribe((result) => {
-        if (result) {
-          this.order.remove(orderPosition);
-        }
-      });
+    const dialogSub = dialogRef.afterClosed()
+      .pipe(filter((result) => result))
+      .subscribe(() => this.orderService.remove(orderPosition));
+
+    this.subscriptions.push(dialogSub);
   }
 
   submit() {
     this.pending = true;
 
     const order: Order = {
-      list: this.order.list.map(item => {
+      list: this.orderService.list.map(item => {
         delete item._id;
         return item;
       })
     };
 
-    this.ordersService.create(order)
-      .pipe(untilDestroyed(this))
+    const createSub = this.ordersService.create(order)
       .subscribe(
         newOrder => {
           this.openModalService.openModal(newOrder, null, `Order #${newOrder.order} successfully added!`);
-          this.order.clear();
+          this.orderService.clear();
         },
         error => this.openModalService.openModal(null, error.error.message),
         () => {
@@ -70,8 +71,11 @@ export class OrderCartComponent implements OnInit, OnDestroy {
           this.router.navigate(['/order']);
         }
       );
+
+    this.subscriptions.push(createSub);
   }
 
   ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }
