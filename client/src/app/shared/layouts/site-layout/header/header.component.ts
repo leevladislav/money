@@ -1,14 +1,12 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {WalletsService} from '../../../services/wallets.service';
-import {Category} from '../../../interfaces';
-import {CategoriesService} from '../../../services/categories.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ModalAddIncomeComponent} from '../../../../entry-components/modal-add-income/modal-add-income.component';
 import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
 import {unsubscribe} from '../../../../utils/unsubscriber';
 import {Wallet} from '../../../interfaces/wallets.interfaces';
+import {ExpensesService} from '../../../services/expenses.service';
 
 @Component({
   selector: 'app-header',
@@ -29,18 +27,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     private media: MediaMatcher,
     private walletsService: WalletsService,
-    private categoriesService: CategoriesService,
+    private expensesService: ExpensesService,
     private dialog: MatDialog
   ) {
   }
 
   ngOnInit(): void {
-    const categoriesUpdateSub = this.categoriesService.onUpdateCategories$
-      .pipe(filter((trigger) => trigger))
-      .subscribe(() => this.getExpenses());
-
-    this.subscriptions.push(categoriesUpdateSub);
-
     this.getWallets();
     this.getExpenses();
     this.mobileWidthListener();
@@ -61,17 +53,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getExpenses(): void {
-    const categoriesSub = this.categoriesService.fetch()
-      .subscribe((categories: Category[]) => {
-        if (categories.length) {
-          this.countExpenses(categories);
-        }
-      });
-
-    this.subscriptions.push(categoriesSub);
+    // const expensesSub = this.expensesService.expenses$
+    //   .subscribe(() => this.countExpenses(expenses));
+    //
+    // this.subscriptions.push(expensesSub);
   }
 
-  countExpenses(categories): void {
+  countExpenses(expenses): void {
     // TODO: get real data
     this.expenses = 0;
     // this.expenses = categories.reduce((total, item) => total += item.budget, 0);

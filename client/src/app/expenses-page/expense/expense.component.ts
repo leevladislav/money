@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Category} from '../../shared/interfaces';
+import {Category} from '../../shared/interfaces/categories.interfaces';
 
 @Component({
   selector: 'app-expense',

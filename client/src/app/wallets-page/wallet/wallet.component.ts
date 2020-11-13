@@ -127,7 +127,6 @@ export class WalletComponent implements OnInit, OnDestroy {
       return this.form.markAllAsTouched();
     }
 
-
     this.form.disable();
 
     this.isNew ? this.createWallet() : this.updateWallet();

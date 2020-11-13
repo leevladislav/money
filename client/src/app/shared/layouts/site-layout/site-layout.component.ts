@@ -7,6 +7,8 @@ import {Observable, Subscription} from 'rxjs';
 import {WalletsService} from '../../services/wallets.service';
 import {unsubscribe} from '../../../utils/unsubscriber';
 import {Wallet} from '../../interfaces/wallets.interfaces';
+import {Category} from '../../interfaces/categories.interfaces';
+import {CategoriesService} from '../../services/categories.service';
 
 @Component({
   selector: 'app-site-layout',
@@ -33,7 +35,8 @@ export class SiteLayoutComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private router: Router,
     private profileService: ProfileService,
-    private walletsService: WalletsService
+    private walletsService: WalletsService,
+    private categoriesService: CategoriesService
   ) {
   }
 
@@ -45,11 +48,19 @@ export class SiteLayoutComponent implements OnInit, OnDestroy {
     }
 
     this.getProfile();
+    this.getCategories();
     this.getWallets();
   }
 
   getProfile(): void {
     this.profile$ = this.profileService.getProfile();
+  }
+
+  getCategories(): void {
+    const fetchCategoriesSub = this.categoriesService.fetch()
+      .subscribe((categories: Category[]) => this.categoriesService.throwCategories(categories));
+
+    this.subscriptions.push(fetchCategoriesSub);
   }
 
   getWallets(): void {

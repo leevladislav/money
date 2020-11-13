@@ -4,11 +4,11 @@ import {of, Subscription} from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CategoriesService} from '../../shared/services/categories.service';
 import {filter, switchMap} from 'rxjs/operators';
-import {Category} from '../../shared/interfaces';
 import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ModalConfirmComponent} from '../../entry-components/modal-confirm/modal-confirm.component';
 import {unsubscribe} from '../../utils/unsubscriber';
+import {Category, CategoryCreateParams, CategoryUpdateParams} from '../../shared/interfaces/categories.interfaces';
 
 @Component({
   selector: 'app-category',
@@ -36,9 +36,19 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.form = this.fb.group({name: [null, [Validators.required]]});
-    this.form.disable();
+    this.initForm();
+    this.getCategories();
+  }
 
+  initForm(): void {
+    this.form = this.fb.group({
+      name: [null, [Validators.required]]
+    });
+
+    this.form.disable();
+  }
+
+  getCategories(): void {
     const routeSub = this.route.params.pipe(
       switchMap(
         (params: Params) => {
@@ -54,8 +64,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
       (category: Category) => {
         if (category) {
           this.category = category;
-          this.form.patchValue({name: category.name});
           this.imagePreview = category.imageSrc;
+
+          this.form.patchValue({name: category.name});
         }
 
         this.form.enable();
@@ -66,11 +77,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.subscriptions.push(routeSub);
   }
 
-  triggerClick() {
+  triggerClick(): void {
     this.inputRef.nativeElement.click();
   }
 
-  tryToDeleteCategory() {
+  onDeleteCategory(): void {
     const dialogRef = this.dialog.open(ModalConfirmComponent, {
       data: {
         title: 'Attention!',
@@ -92,7 +103,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
       .subscribe(
         response => {
           this.openModalService.openModal(response, null, response.message, 'categories');
-          this.categoriesService.onUpdateCategories$.next(true);
+          this.updateAllCategories();
         },
         error => this.openModalService.openModal(null, error.error.message)
       );
@@ -100,7 +111,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.subscriptions.push(deleteCategorySub);
   }
 
-  onFileUpload(event: any) {
+  onFileUpload(event: any): void {
     const file = event.target.files[0];
     const reader = new FileReader();
     this.image = file;
@@ -110,41 +121,65 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    let submitCategorySub;
-
     if (this.form.invalid) {
       return this.form.markAllAsTouched();
     }
 
     this.form.disable();
 
-    if (this.isNew) {
-      submitCategorySub = this.categoriesService.create(
-        this.form.value.name,
-        this.image
-      );
-    } else {
-      submitCategorySub = this.categoriesService.update(
-        this.category._id,
-        this.form.value.name,
-        this.image
-      );
-    }
+    this.isNew ? this.createCategory() : this.updateCategory();
+  }
 
-    submitCategorySub.subscribe(
+  createCategory(): void {
+    const data: CategoryCreateParams = {
+      name: this.form.value.name,
+      image: this.image
+    };
+
+    const createCategorySub = this.categoriesService.create(data).subscribe(
+      category => {
+        this.category = category;
+        this.openModalService.openModal(category, null, 'Category successfully created', 'categories');
+        this.form.enable();
+        this.updateAllCategories();
+      },
+      error => {
+        this.form.enable();
+        this.openModalService.openModal(null, error.error.message);
+      }
+    );
+
+    this.subscriptions.push(createCategorySub);
+  }
+
+  updateCategory(): void {
+    const data: CategoryUpdateParams = {
+      id: this.category._id,
+      name: this.form.value.name,
+      image: this.image
+    };
+
+    const updateCategorySub = this.categoriesService.update(data).subscribe(
       category => {
         this.category = category;
         this.openModalService.openModal(category, null, 'Category successfully edited', 'categories');
         this.form.enable();
-        this.categoriesService.onUpdateCategories$.next(true);
+        this.updateAllCategories();
       },
       error => {
-        this.openModalService.openModal(null, error.error.message);
         this.form.enable();
+        this.openModalService.openModal(null, error.error.message);
       }
     );
 
-    this.subscriptions.push(submitCategorySub);
+    this.subscriptions.push(updateCategorySub);
+  }
+
+  updateAllCategories(): void {
+    const fetchCategoriesSub = this.categoriesService.fetch()
+      .subscribe((categories: Category[]) => this.categoriesService.throwCategories(categories));
+
+    this.subscriptions.push(fetchCategoriesSub);
   }
 
   ngOnDestroy() {

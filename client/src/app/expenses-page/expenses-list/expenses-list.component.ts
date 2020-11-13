@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Observable, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {Wallet} from '../../shared/interfaces/wallets.interfaces';
 import {CategoriesService} from '../../shared/services/categories.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ModalSelectWalletComponent} from '../../entry-components/modal-select-wallet/modal-select-wallet.component';
 import {WalletsService} from '../../shared/services/wallets.service';
 import {unsubscribe} from '../../utils/unsubscriber';
-import {Category} from '../../shared/interfaces';
+import {Category} from '../../shared/interfaces/categories.interfaces';
 import {filter} from 'rxjs/operators';
 
 @Component({
@@ -15,8 +15,8 @@ import {filter} from 'rxjs/operators';
   styleUrls: ['./expenses-list.component.scss']
 })
 export class ExpensesListComponent implements OnInit, OnDestroy {
-  categories$: Observable<Category[]>;
   wallets: Wallet[] = [];
+  categories: Category[] = [];
 
   private subscriptions: Subscription[] = [];
 
@@ -28,8 +28,15 @@ export class ExpensesListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.categories$ = this.categoriesService.fetch();
+    this.getCategories();
     this.getWallets();
+  }
+
+  getCategories(): void {
+    const categoriesSub = this.categoriesService.categories$
+      .subscribe((categories: Category[]) => this.categories = [...categories || []]);
+
+    this.subscriptions.push(categoriesSub);
   }
 
   getWallets(): void {

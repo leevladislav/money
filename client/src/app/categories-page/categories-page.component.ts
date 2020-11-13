@@ -10,6 +10,6 @@ export class CategoriesPageComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 }
