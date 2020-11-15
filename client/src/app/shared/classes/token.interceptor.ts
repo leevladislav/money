@@ -19,7 +19,7 @@ export class TokenInterceptor implements HttpInterceptor {
         setHeaders: {
           Authorization: this.auth.getToken()
         }
-      })
+      });
     }
 
     return next.handle(req).pipe(
@@ -38,6 +38,6 @@ export class TokenInterceptor implements HttpInterceptor {
       });
     }
 
-    return throwError(error)
+    return throwError(error);
   }
 }

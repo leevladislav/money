@@ -34,6 +34,7 @@ module.exports.create = async function(req, res) {
             category: req.body.category,
             user: req.user.id
         }).save();
+
         res.status(201).json(position);
     } catch (e) {
         errorHandler(res, e);

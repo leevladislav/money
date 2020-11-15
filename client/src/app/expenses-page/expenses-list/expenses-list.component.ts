@@ -3,11 +3,15 @@ import {Subscription} from 'rxjs';
 import {Wallet} from '../../shared/interfaces/wallets.interfaces';
 import {CategoriesService} from '../../shared/services/categories.service';
 import {MatDialog} from '@angular/material/dialog';
-import {ModalSelectWalletComponent} from '../../entry-components/modal-select-wallet/modal-select-wallet.component';
+import {SelectWalletComponent} from '../../shared-modules/select-wallet/select-wallet.component';
 import {WalletsService} from '../../shared/services/wallets.service';
 import {unsubscribe} from '../../utils/unsubscriber';
 import {Category} from '../../shared/interfaces/categories.interfaces';
 import {filter} from 'rxjs/operators';
+import {EnterExpenseComponent} from '../../shared-modules/enter-expense/enter-expense.component';
+import {Expense} from '../../shared/interfaces/expenses.interfaces';
+import {ExpensesService} from '../../shared/services/expenses.service';
+import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
 
 @Component({
   selector: 'app-expenses-list',
@@ -23,7 +27,9 @@ export class ExpensesListComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private categoriesService: CategoriesService,
-    private walletsService: WalletsService
+    private walletsService: WalletsService,
+    private expensesService: ExpensesService,
+    private openModalService: OpenModalInfoService
   ) {
   }
 
@@ -46,35 +52,51 @@ export class ExpensesListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(walletsSub);
   }
 
-  selectWallet(category: Category): void {
-    const dialogRef = this.dialog.open(ModalSelectWalletComponent, {
-      data: {
-        title: 'Select wallet',
-        type: 'Select wallet where money comes from',
-        wallets: this.wallets
-      },
+  selectWallet(selectedCategory: Category): void {
+    const dialogRef = this.dialog.open(SelectWalletComponent, {
+      data: this.wallets,
       panelClass: ['primary-modal', 'modal-md'],
       autoFocus: false
     });
 
     const dialogRefSub = dialogRef.afterClosed()
-      .pipe(filter((wallet) => wallet))
-      .subscribe((wallet) => this.enterExpense(wallet, category));
+      .pipe(filter((selectedWallet) => selectedWallet))
+      .subscribe((selectedWallet: Wallet) => this.enterExpense(selectedWallet, selectedCategory));
 
     this.subscriptions.push(dialogRefSub);
   }
 
-  enterExpense(wallet: Wallet, category: Category): void {
+  enterExpense(selectedWallet: Wallet, selectedCategory: Category): void {
+    const dialogRef = this.dialog.open(EnterExpenseComponent, {
+      data: selectedWallet,
+      panelClass: ['primary-modal', 'modal-md'],
+      autoFocus: false
+    });
 
-    this.updateExpenses(wallet, category, 0);
+    const dialogRefSub = dialogRef.afterClosed()
+      .pipe(filter((expense) => expense))
+      .subscribe((expense: Expense) => this.createExpenses(selectedWallet, selectedCategory, expense));
+
+    this.subscriptions.push(dialogRefSub);
   }
 
-  updateExpenses(wallet: Wallet, category: Category, expense: number): void {
-    console.log(wallet, 'wallet');
-    console.log(category, 'category');
-    console.log(expense, 'expense');
+  createExpenses(selectedWallet: Wallet, selectedCategory: Category, enteredExpense: Expense): void {
+    const data = {
+      ...enteredExpense,
+      wallet: selectedWallet._id,
+      category: selectedCategory._id,
+    };
 
-    // [category._id, 'edit']
+    const createExpensesSub = this.expensesService.create(data)
+      .subscribe(
+        (expense: Expense) => {
+          this.walletsService.walletsUpdated$.next(true);
+          this.openModalService.openModal(expense, null, 'Expense successfully added');
+        },
+        (error) => this.openModalService.openModal(null, error.error.message)
+      );
+
+    this.subscriptions.push(createExpensesSub);
   }
 
   ngOnDestroy(): void {

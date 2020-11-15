@@ -106,7 +106,7 @@ export class WalletComponent implements OnInit, OnDestroy {
     this.walletsService.delete(this.wallet._id)
       .subscribe(
         response => {
-          this.updateAllWallets();
+          this.walletsService.walletsUpdated$.next(true);
           this.openModalService.openModal(response, null, response.message, '/wallets');
         },
         error => this.openModalService.openModal(null, error.error.message)
@@ -143,9 +143,9 @@ export class WalletComponent implements OnInit, OnDestroy {
       .subscribe(
         wallet => {
           this.wallet = wallet;
-          this.openModalService.openModal(wallet, null, 'Wallet successfully added', '/wallets');
           this.form.enable();
-          this.updateAllWallets();
+          this.walletsService.walletsUpdated$.next(true);
+          this.openModalService.openModal(wallet, null, 'Wallet successfully added', '/wallets');
         },
         error => {
           this.form.enable();
@@ -167,9 +167,9 @@ export class WalletComponent implements OnInit, OnDestroy {
       .subscribe(
         wallet => {
           this.wallet = wallet;
-          this.openModalService.openModal(wallet, null, 'Wallet successfully edited', '/wallets');
           this.form.enable();
-          this.updateAllWallets();
+          this.walletsService.walletsUpdated$.next(true);
+          this.openModalService.openModal(wallet, null, 'Wallet successfully edited', '/wallets');
         },
         error => {
           this.form.enable();
@@ -177,13 +177,6 @@ export class WalletComponent implements OnInit, OnDestroy {
         });
 
     this.subscriptions.push(updateWalletSub);
-  }
-
-  updateAllWallets(): void {
-    const fetchWalletsSub = this.walletsService.fetch()
-      .subscribe((wallets: Wallet[]) => this.walletsService.throwWallets(wallets));
-
-    this.subscriptions.push(fetchWalletsSub);
   }
 
   ngOnDestroy(): void {

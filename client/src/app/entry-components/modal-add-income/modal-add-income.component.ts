@@ -21,7 +21,7 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     public modal: MatDialogRef<ModalAddIncomeComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: Wallet[],
     private walletsService: WalletsService,
     private openModalService: OpenModalInfoService
   ) {
@@ -60,10 +60,10 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
 
     const walletsSub = this.walletsService.addIncome(data).subscribe(
       wallet => {
-        this.openModalService.openModal(wallet, null, 'Income successfully added');
-        this.updateAllWallets();
         this.form.enable();
         this.modal.close();
+        this.walletsService.walletsUpdated$.next(true);
+        this.openModalService.openModal(wallet, null, 'Income successfully added');
       },
       error => {
         this.openModalService.openModal(null, error.error.message);
@@ -71,13 +71,6 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
       });
 
     this.subscriptions.push(walletsSub);
-  }
-
-  updateAllWallets(): void {
-    const fetchWalletsSub = this.walletsService.fetch()
-      .subscribe((wallets: Wallet[]) => this.walletsService.throwWallets(wallets));
-
-    this.subscriptions.push(fetchWalletsSub);
   }
 
   ngOnDestroy(): void {

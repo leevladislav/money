@@ -6,7 +6,8 @@ import {SharedModule} from '../shared/shared.module';
 import {PositionsListComponent} from './positions-list/positions-list.component';
 import {PositionComponent} from './positions-list/position/position.component';
 import {ExpensesListComponent} from './expenses-list/expenses-list.component';
-import {ExpenseComponent} from './expense/expense.component';
+import {EnterExpenseModule} from '../shared-modules/enter-expense/enter-expense.module';
+import {SelectWalletModule} from '../shared-modules/select-wallet/select-wallet.module';
 
 
 @NgModule({
@@ -14,13 +15,14 @@ import {ExpenseComponent} from './expense/expense.component';
     ExpensesPageComponent,
     PositionsListComponent,
     PositionComponent,
-    ExpensesListComponent,
-    ExpenseComponent,
+    ExpensesListComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
-    ExpensesPageRoutingModule
+    ExpensesPageRoutingModule,
+    EnterExpenseModule,
+    SelectWalletModule
   ],
   exports: [
     PositionsListComponent

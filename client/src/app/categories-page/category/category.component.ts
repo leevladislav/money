@@ -102,8 +102,8 @@ export class CategoryComponent implements OnInit, OnDestroy {
     const deleteCategorySub = this.categoriesService.delete(categoryId)
       .subscribe(
         response => {
+          this.categoriesService.categoriesUpdated$.next(true);
           this.openModalService.openModal(response, null, response.message, 'categories');
-          this.updateAllCategories();
         },
         error => this.openModalService.openModal(null, error.error.message)
       );
@@ -139,9 +139,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
     const createCategorySub = this.categoriesService.create(data).subscribe(
       category => {
         this.category = category;
-        this.openModalService.openModal(category, null, 'Category successfully created', 'categories');
         this.form.enable();
-        this.updateAllCategories();
+        this.categoriesService.categoriesUpdated$.next(true);
+        this.openModalService.openModal(category, null, 'Category successfully created', 'categories');
       },
       error => {
         this.form.enable();
@@ -162,9 +162,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
     const updateCategorySub = this.categoriesService.update(data).subscribe(
       category => {
         this.category = category;
-        this.openModalService.openModal(category, null, 'Category successfully edited', 'categories');
         this.form.enable();
-        this.updateAllCategories();
+        this.categoriesService.categoriesUpdated$.next(true);
+        this.openModalService.openModal(category, null, 'Category successfully edited', 'categories');
       },
       error => {
         this.form.enable();
@@ -173,13 +173,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(updateCategorySub);
-  }
-
-  updateAllCategories(): void {
-    const fetchCategoriesSub = this.categoriesService.fetch()
-      .subscribe((categories: Category[]) => this.categoriesService.throwCategories(categories));
-
-    this.subscriptions.push(fetchCategoriesSub);
   }
 
   ngOnDestroy() {

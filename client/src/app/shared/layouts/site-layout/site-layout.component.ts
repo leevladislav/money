@@ -9,6 +9,9 @@ import {unsubscribe} from '../../../utils/unsubscriber';
 import {Wallet} from '../../interfaces/wallets.interfaces';
 import {Category} from '../../interfaces/categories.interfaces';
 import {CategoriesService} from '../../services/categories.service';
+import {ExpensesService} from '../../services/expenses.service';
+import {Expense} from '../../interfaces/expenses.interfaces';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-site-layout',
@@ -36,7 +39,8 @@ export class SiteLayoutComponent implements OnInit, OnDestroy {
     private router: Router,
     private profileService: ProfileService,
     private walletsService: WalletsService,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private expensesService: ExpensesService
   ) {
   }
 
@@ -47,9 +51,29 @@ export class SiteLayoutComponent implements OnInit, OnDestroy {
       this.isOpenedSidebar = false;
     }
 
+    this.subscribeOnWallets();
+    this.subscribeOnCategories();
+
     this.getProfile();
     this.getCategories();
     this.getWallets();
+    this.getExpenses();
+  }
+
+  subscribeOnWallets(): void {
+    const onWalletsUpdatedSub = this.walletsService.walletsUpdated$
+      .pipe(filter((updated) => updated))
+      .subscribe(() => this.getWallets());
+
+    this.subscriptions.push(onWalletsUpdatedSub);
+  }
+
+  subscribeOnCategories(): void {
+    const onCategoriesUpdatedSub = this.categoriesService.categoriesUpdated$
+      .pipe(filter((updated) => updated))
+      .subscribe(() => this.getCategories());
+
+    this.subscriptions.push(onCategoriesUpdatedSub);
   }
 
   getProfile(): void {
@@ -68,6 +92,13 @@ export class SiteLayoutComponent implements OnInit, OnDestroy {
       .subscribe((wallets: Wallet[]) => this.walletsService.throwWallets(wallets));
 
     this.subscriptions.push(fetchWalletsSub);
+  }
+
+  getExpenses(): void {
+    const fetchExpensesSub = this.expensesService.fetch()
+      .subscribe((expenses: Expense[]) => this.expensesService.throwExpenses(expenses));
+
+    this.subscriptions.push(fetchExpensesSub);
   }
 
   onToggleSidebar(event: boolean): void {

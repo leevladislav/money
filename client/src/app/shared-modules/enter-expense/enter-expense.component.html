@@ -1,0 +1,29 @@
+<app-modal-header [title]="'Enter expense'"></app-modal-header>
+
+<div class="dialog-content modal-enter-expense">
+  <form [formGroup]="form" (ngSubmit)="enterExpense()">
+    <mat-form-field>
+      <input matInput placeholder="Add your expense:" formControlName="expense" required>
+      <mat-error>
+        <app-validator-message [field]="form.get('expense')"></app-validator-message>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Add your note:" formControlName="description">
+      <mat-error>
+        <app-validator-message [field]="form.get('description')"></app-validator-message>
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+  <mat-dialog-actions align="center">
+    <button mat-raised-button [mat-dialog-close]="false">
+      Cancel
+    </button>
+
+    <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="enterExpense()">
+      Add
+    </button>
+  </mat-dialog-actions>
+</div>

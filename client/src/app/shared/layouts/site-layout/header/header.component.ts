@@ -7,6 +7,7 @@ import {Subscription} from 'rxjs';
 import {unsubscribe} from '../../../../utils/unsubscriber';
 import {Wallet} from '../../../interfaces/wallets.interfaces';
 import {ExpensesService} from '../../../services/expenses.service';
+import {Expense} from '../../../interfaces/expenses.interfaces';
 
 @Component({
   selector: 'app-header',
@@ -53,16 +54,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getExpenses(): void {
-    // const expensesSub = this.expensesService.expenses$
-    //   .subscribe(() => this.countExpenses(expenses));
-    //
-    // this.subscriptions.push(expensesSub);
+    const expensesSub = this.expensesService.expenses$
+      .subscribe((expenses: Expense[]) => this.countExpenses(expenses));
+
+    this.subscriptions.push(expensesSub);
   }
 
   countExpenses(expenses): void {
-    // TODO: get real data
-    this.expenses = 0;
-    // this.expenses = categories.reduce((total, item) => total += item.budget, 0);
+    this.expenses = expenses.reduce((total, item) => total += item.expense, 0);
   }
 
   mobileWidthListener(): void {
@@ -86,11 +85,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   addIncome(): void {
     this.dialog.open(ModalAddIncomeComponent, {
-      data: {
-        title: 'Adding income',
-        type: 'Select account where money comes to',
-        wallets: this.wallets
-      },
+      data: this.wallets,
       panelClass: ['primary-modal', 'modal-md'],
       autoFocus: false
     });

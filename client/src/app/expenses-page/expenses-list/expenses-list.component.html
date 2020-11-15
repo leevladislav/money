@@ -1,10 +1,16 @@
 <div *ngIf="categories.length; else loader">
   <div class="cards-list expenses-list-layout" *ngIf="categories.length !==0">
-    <app-expense *ngFor="let category of categories"
-                 [category]="category"
-                 class="layout-item"
-                 (click)="selectWallet(category)">
-    </app-expense>
+    <div *ngFor="let category of categories" class="layout-item" (click)="selectWallet(category)">
+      <p class="title">{{category.name}}</p>
+
+      <div class="img-wrapper">
+        <img *ngIf="category.imageSrc; else noImage" src="{{category.imageSrc}}" alt="category">
+
+        <ng-template #noImage>
+          <img src="assets/images/category-default.jpeg" alt="category image">
+        </ng-template>
+      </div>
+    </div>
   </div>
 </div>
 

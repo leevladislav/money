@@ -1,13 +1,14 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Message} from '../interfaces';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Category, CategoryCreateParams, CategoryUpdateParams} from '../interfaces/categories.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriesService {
+  categoriesUpdated$ = new Subject<boolean>();
   categories$ = new BehaviorSubject<Category[]>([]);
 
   constructor(private http: HttpClient) {

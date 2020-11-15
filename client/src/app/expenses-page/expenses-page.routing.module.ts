@@ -3,7 +3,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {ExpensesPageComponent} from './expenses-page.component';
 import {PositionComponent} from './positions-list/position/position.component';
 import {ExpensesListComponent} from './expenses-list/expenses-list.component';
-import {ExpenseComponent} from './expense/expense.component';
 
 const routes: Routes = [
   {
@@ -13,10 +12,6 @@ const routes: Routes = [
       {
         path: '',
         component: ExpensesListComponent
-      },
-      {
-        path: ':id/edit',
-        component: ExpenseComponent
       },
       {
         path: ':id/edit/position/create',

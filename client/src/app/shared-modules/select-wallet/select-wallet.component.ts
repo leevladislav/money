@@ -4,13 +4,13 @@ import {Wallet} from '../../shared/interfaces/wallets.interfaces';
 
 @Component({
   selector: 'app-modal-select-wallet',
-  templateUrl: './modal-select-wallet.component.html',
-  styleUrls: ['./modal-select-wallet.component.scss']
+  templateUrl: './select-wallet.component.html',
+  styleUrls: ['./select-wallet.component.scss']
 })
-export class ModalSelectWalletComponent implements OnInit {
+export class SelectWalletComponent implements OnInit {
   constructor(
-    public modal: MatDialogRef<ModalSelectWalletComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    public modal: MatDialogRef<SelectWalletComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: Wallet[]
   ) {
   }
 
