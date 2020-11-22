@@ -91,6 +91,7 @@ export class ExpensesListComponent implements OnInit, OnDestroy {
       .subscribe(
         (expense: Expense) => {
           this.walletsService.walletsUpdated$.next(true);
+          this.expensesService.expensesUpdated$.next(true);
           this.openModalService.openModal(expense, null, 'Expense successfully added');
         },
         (error) => this.openModalService.openModal(null, error.error.message)

@@ -1,26 +1,26 @@
-<div class="history-list">
-  <div class="list-heading">
-    <p class="number">№</p>
-    <p class="date">Date</p>
-    <p class="time">Time</p>
-    <p class="cost">Cost</p>
-  </div>
+<p class="section-title">History</p>
 
-  <div class="list-items">
-    <div *ngFor="let order of orders" class="history-item">
-      <p class="number">{{order.order}}</p>
+<div *ngIf="categories.length; else loader">
+  <div class="cards-list expenses-list-layout" *ngIf="categories.length; else empty">
+    <div *ngFor="let category of categories" class="layout-item" [routerLink]="[category._id]">
+      <p class="title">{{category.name}}</p>
 
-      <p class="date">{{order.date | date: 'dd.MM.yyyy'}}</p>
+      <div class="img-wrapper">
+        <img *ngIf="category.imageSrc; else noImage" src="{{category.imageSrc}}" alt="category">
 
-      <p class="time">{{order.date | date: 'HH:mm:ss'}}</p>
-
-      <p class="cost">{{computePrice(order)}} UAH.</p>
-
-      <div class="show-more">
-        <button mat-button color="primary" (click)="selectOrder(order)">
-          <mat-icon>open_in_new</mat-icon>
-        </button>
+        <ng-template #noImage>
+          <img src="assets/images/category-default.jpeg" alt="category image">
+        </ng-template>
       </div>
     </div>
   </div>
+
+  <ng-template #empty>
+    <div class="center">Categories list is empty</div>
+  </ng-template>
 </div>
+
+<ng-template #loader>
+  <app-loader></app-loader>
+</ng-template>
+

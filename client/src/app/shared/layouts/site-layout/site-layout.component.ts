@@ -51,8 +51,9 @@ export class SiteLayoutComponent implements OnInit, OnDestroy {
       this.isOpenedSidebar = false;
     }
 
-    this.subscribeOnWallets();
     this.subscribeOnCategories();
+    this.subscribeOnWallets();
+    this.subscribeOnExpenses();
 
     this.getProfile();
     this.getCategories();
@@ -74,6 +75,14 @@ export class SiteLayoutComponent implements OnInit, OnDestroy {
       .subscribe(() => this.getCategories());
 
     this.subscriptions.push(onCategoriesUpdatedSub);
+  }
+
+  subscribeOnExpenses(): void {
+    const onWalletsUpdatedSub = this.expensesService.expensesUpdated$
+      .pipe(filter((updated) => updated))
+      .subscribe(() => this.getExpenses());
+
+    this.subscriptions.push(onWalletsUpdatedSub);
   }
 
   getProfile(): void {

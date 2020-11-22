@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, Params} from '@angular/router';
 import {of, Subscription} from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CategoriesService} from '../../shared/services/categories.service';
@@ -29,7 +29,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private categoriesService: CategoriesService,
-    private router: Router,
     private openModalService: OpenModalInfoService,
     private dialog: MatDialog
   ) {

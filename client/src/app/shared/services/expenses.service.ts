@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Message} from '../interfaces';
 import {Expense} from '../interfaces/expenses.interfaces';
 
@@ -8,6 +8,7 @@ import {Expense} from '../interfaces/expenses.interfaces';
   providedIn: 'root'
 })
 export class ExpensesService {
+  expensesUpdated$ = new Subject<boolean>();
   expenses$ = new BehaviorSubject<Expense[]>([]);
 
   constructor(private http: HttpClient) {
@@ -30,6 +31,7 @@ export class ExpensesService {
   }
 
   throwExpenses(expenses: Expense[]) {
+    console.log(expenses);
     this.expenses$.next(expenses);
   }
 }

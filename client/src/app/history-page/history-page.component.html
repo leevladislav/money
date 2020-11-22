@@ -1,30 +1,29 @@
-<div class="page-title">
-  <p>Orders history</p>
-</div>
+<router-outlet></router-outlet>
 
-<app-history-filter (onFilter)="applyFilter($event)"></app-history-filter>
 
-<div *ngIf="!reloading; else reloadingBlock">
-  <div *ngIf="orders.length > 0; else empty">
-    <app-history-list [orders]="orders"></app-history-list>
+<!--<app-history-filter (onFilter)="applyFilter($event)"></app-history-filter>-->
 
-    <div *ngIf="!noMoreOrders" class="load-more">
-      <button mat-raised-button color="primary"
-              (click)="loadMore()" *ngIf="!loading; else loader">
-        Load more
-      </button>
+<!--<div *ngIf="!reloading; else reloadingBlock">-->
+<!--  <div *ngIf="orders.length > 0; else empty">-->
+<!--    <app-history-list [orders]="orders"></app-history-list>-->
 
-      <ng-template #loader>
-        <app-loader></app-loader>
-      </ng-template>
-    </div>
-  </div>
+<!--    <div *ngIf="!noMoreOrders" class="load-more">-->
+<!--      <button mat-raised-button color="primary"-->
+<!--              (click)="loadMore()" *ngIf="!loading; else loader">-->
+<!--        Load more-->
+<!--      </button>-->
 
-  <ng-template #empty>
-    <div class="center">Orders list is empty</div>
-  </ng-template>
-</div>
+<!--      <ng-template #loader>-->
+<!--        <app-loader></app-loader>-->
+<!--      </ng-template>-->
+<!--    </div>-->
+<!--  </div>-->
 
-<ng-template #reloadingBlock>
-  <app-loader></app-loader>
-</ng-template>
+<!--  <ng-template #empty>-->
+<!--    <div class="center">Orders list is empty</div>-->
+<!--  </ng-template>-->
+<!--</div>-->
+
+<!--<ng-template #reloadingBlock>-->
+<!--  <app-loader></app-loader>-->
+<!--</ng-template>-->

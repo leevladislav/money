@@ -1,27 +1,67 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {Order} from '../../../shared/interfaces';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {of, Subscription} from 'rxjs';
+import {Category} from '../../../shared/interfaces/categories.interfaces';
+import {CategoriesService} from '../../../shared/services/categories.service';
+import {unsubscribe} from '../../../utils/unsubscriber';
+import {ExpensesService} from '../../../shared/services/expenses.service';
+import {Expense} from '../../../shared/interfaces/expenses.interfaces';
 
 @Component({
   selector: 'app-history-info',
   templateUrl: './history-info.component.html',
   styleUrls: ['./history-info.component.scss']
 })
-export class HistoryInfoComponent implements OnInit {
-  order: Order;
+export class HistoryInfoComponent implements OnInit, OnDestroy {
+  category: Category;
+  expenses: Expense[];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
+  private subscriptions: Subscription[] = [];
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private categoriesService: CategoriesService,
+    private expensesService: ExpensesService
+  ) {
   }
 
   ngOnInit() {
-    if (this.data) {
-      this.order = this.data.orderData;
-    }
+    const routeSub = this.route.params.subscribe(
+      (params: Params) => {
+        this.getCategory(params.id);
+        this.getExpensesByCategoryId(params.id);
+      }
+    );
+
+    this.subscriptions.push(routeSub);
   }
 
-  computePrice(order: Order): number {
-    return order.list.reduce((total, item) => {
-      return total += item.quantity * item.cost;
-    }, 0);
+  getCategory(categoryId: string): void {
+    const getCategorySub = this.categoriesService.getById(categoryId).subscribe(
+      (category: Category) => {
+        console.log(category);
+        this.category = category;
+      },
+      () => this.router.navigate(['history'])
+    );
+
+    this.subscriptions.push(getCategorySub);
+  }
+
+  getExpensesByCategoryId(categoryId: string): void {
+    const getExpensesSub = this.expensesService.getByCategoryId(categoryId).subscribe(
+      (expenses: Expense[]) => {
+        console.log('expenses', expenses);
+        this.expenses = [...expenses];
+      },
+      () => this.router.navigate(['history'])
+    );
+
+    this.subscriptions.push(getExpensesSub);
+  }
+
+  ngOnDestroy() {
+    unsubscribe(this.subscriptions);
   }
 }

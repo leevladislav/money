@@ -26,8 +26,8 @@ export class HistoryPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.reloading = true;
-    this.fetch();
+    // this.reloading = true;
+    // this.fetch();
   }
 
   private fetch() {

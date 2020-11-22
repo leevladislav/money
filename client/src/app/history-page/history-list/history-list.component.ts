@@ -1,39 +1,34 @@
-import {Component, Input, OnDestroy} from '@angular/core';
-import {Order} from '../../shared/interfaces';
-import {MatDialog} from '@angular/material/dialog';
-import {HistoryInfoComponent} from './history-info/history-info.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Category} from '../../shared/interfaces/categories.interfaces';
+import {Subscription} from 'rxjs';
+import {CategoriesService} from '../../shared/services/categories.service';
+import {unsubscribe} from '../../utils/unsubscriber';
 
 @Component({
   selector: 'app-history-list',
   templateUrl: './history-list.component.html',
   styleUrls: ['./history-list.component.scss']
 })
-export class HistoryListComponent implements OnDestroy {
-  @Input() orders: Order[];
-  selectedOrder: Order;
+export class HistoryListComponent implements OnInit, OnDestroy {
+  categories: Category[] = [];
 
-  constructor(private dialog: MatDialog) {
+  private subscriptions: Subscription[] = [];
+
+  constructor(private categoriesService: CategoriesService) {
   }
 
-  computePrice(order: Order): number {
-    return order.list.reduce((total, item) => {
-      return total += item.quantity * item.cost;
-    }, 0);
+  ngOnInit(): void {
+    this.getCategories();
   }
 
-  selectOrder(order: Order) {
-    this.selectedOrder = order;
+  getCategories(): void {
+    const categoriesSub = this.categoriesService.categories$
+      .subscribe((categories: Category[]) => this.categories = [...categories || []]);
 
-    this.dialog.open(HistoryInfoComponent, {
-      data: {
-        title: 'Order info',
-        orderData: this.selectedOrder
-      },
-      panelClass: ['primary-modal'],
-      autoFocus: false
-    });
+    this.subscriptions.push(categoriesSub);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
+    unsubscribe(this.subscriptions);
   }
 }
