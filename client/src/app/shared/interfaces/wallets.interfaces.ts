@@ -18,3 +18,7 @@ export interface Wallet {
   user?: string;
   _id?: string;
 }
+
+export interface RelationOfWallets {
+  [propName: string]: Wallet;
+}

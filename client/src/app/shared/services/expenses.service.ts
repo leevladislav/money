@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Message} from '../interfaces';
-import {Expense} from '../interfaces/expenses.interfaces';
+import {Expense, ExpenseApiWithWallets} from '../interfaces/expenses.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -18,16 +18,16 @@ export class ExpensesService {
     return this.http.get<Expense[]>('/api/expense');
   }
 
-  getByCategoryId(categoryId: string): Observable<Expense[]> {
-    return this.http.get<Expense[]>(`/api/expense/${categoryId}`);
+  getByCategoryId(categoryId: string): Observable<ExpenseApiWithWallets> {
+    return this.http.get<ExpenseApiWithWallets>(`/api/expense/${categoryId}`);
   }
 
   create(expense: Expense): Observable<Expense> {
     return this.http.post<Expense>('/api/expense', expense);
   }
 
-  delete(expense: Expense): Observable<Message> {
-    return this.http.delete<Message>(`/api/position/${expense._id}`);
+  delete(expenseId: string): Observable<Message> {
+    return this.http.delete<Message>(`/api/expense/${expenseId}`);
   }
 
   throwExpenses(expenses: Expense[]) {

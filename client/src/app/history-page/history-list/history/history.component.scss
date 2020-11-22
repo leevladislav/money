@@ -9,6 +9,23 @@
     margin: 0.8rem auto;
     border-radius: $border-radius;
     box-shadow: $primary-box-shadow;
+    cursor: pointer;
+
+    .expense-date {
+      margin-right: 2rem;
+    }
+
+    .expense-relation {
+      .wallet {
+        font-size: 1rem;
+      }
+
+      .category {
+        display: block;
+        color: $muted-color;
+        margin-top: 0.6rem;
+      }
+    }
 
     .expense-info {
       text-align: right;

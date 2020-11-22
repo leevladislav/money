@@ -98,8 +98,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   deleteCategory(categoryId) {
-    const deleteCategorySub = this.categoriesService.delete(categoryId)
-      .subscribe(
+    const deleteCategorySub = this.categoriesService.delete(categoryId).subscribe(
         response => {
           this.categoriesService.categoriesUpdated$.next(true);
           this.openModalService.openModal(response, null, response.message, 'categories');

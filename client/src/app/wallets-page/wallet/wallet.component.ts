@@ -103,8 +103,7 @@ export class WalletComponent implements OnInit, OnDestroy {
   }
 
   deleteWallet(): void {
-    this.walletsService.delete(this.wallet._id)
-      .subscribe(
+    this.walletsService.delete(this.wallet._id).subscribe(
         response => {
           this.walletsService.walletsUpdated$.next(true);
           this.openModalService.openModal(response, null, response.message, '/wallets');

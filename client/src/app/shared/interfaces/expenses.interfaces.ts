@@ -1,3 +1,5 @@
+import {RelationOfWallets} from './wallets.interfaces';
+
 export interface Expense {
   expense: number;
   date: string;
@@ -5,4 +7,9 @@ export interface Expense {
   wallet: string;
   description?: string | null;
   _id?: string;
+}
+
+export interface ExpenseApiWithWallets {
+  expenses: Expense[];
+  wallets: RelationOfWallets;
 }

@@ -4,10 +4,13 @@
 
 <p class="section-title">{{category?.name}} history</p>
 
-<div class="history-layout">
-  <div class="layout-item item-expense" *ngFor="let expense of expenses">
-    <div class="expense-direction">
-      <span class="to">{{category?.name}}</span>
+<div class="history-layout" *ngIf="expenses.length; else empty">
+  <div class="layout-item item-expense" *ngFor="let expense of expenses" (click)="changeExpense(expense._id)">
+    <span class="expense-date">{{expense?.date | date: 'dd.MM.YYYY'}}</span>
+
+    <div class="expense-relation">
+      <span class="wallet">{{wallets[expense?.wallet]?.name}}</span>
+      <span class="category">{{category?.name}}</span>
     </div>
 
     <div class="expense-info">
@@ -16,9 +19,13 @@
     </div>
 
     <div class="expense-actions">
-      <button type="button" color="warn" mat-icon-button (click)="onDeleteExpense(expense._id)">
+      <button type="button" color="warn" mat-icon-button (click)="deleteExpense(expense._id)">
         <mat-icon>delete</mat-icon>
       </button>
     </div>
   </div>
 </div>
+
+<ng-template #empty>
+  <div class="center">Expenses history is empty</div>
+</ng-template>

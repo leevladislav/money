@@ -2,7 +2,7 @@ const Expense = require('../models/Expense');
 const Wallets = require('../models/Wallets');
 const errorHandler = require('../utils/errorHandler');
 
-module.exports.getAll = async function(req, res) {
+module.exports.getAll = async function (req, res) {
     try {
         const expenses = await Expense.find({user: req.user.id});
         res.status(200).json(expenses);
@@ -11,24 +11,29 @@ module.exports.getAll = async function(req, res) {
     }
 };
 
-module.exports.getByCategoryId = async function(req, res) {
+module.exports.getByCategoryId = async function (req, res) {
     try {
-        const expense = await Expense.find({
+        const walletsCandidates = await Wallets.find({user: req.user.id});
+
+        let wallets = walletsCandidates.reduce((acc, wallet) => {
+            acc[wallet._id] = wallet;
+            return acc;
+        }, {});
+
+        const expenses = await Expense.find({
             category: req.params.categoryId,
             user: req.user.id
         });
 
-        res.status(200).json(expense);
+        res.status(200).json({expenses, wallets});
     } catch (e) {
         errorHandler(res, e);
     }
 };
 
-module.exports.create = async function(req, res) {
+module.exports.create = async function (req, res) {
     const wallet = await Wallets.findById(req.body.wallet);
-    const updated = {
-        budget: wallet.budget - Number(req.body.expense)
-    };
+    const updated = {budget: wallet.budget - Number(req.body.expense)};
 
     try {
         await Wallets.updateOne(
@@ -51,9 +56,23 @@ module.exports.create = async function(req, res) {
     }
 };
 
-module.exports.remove = async function(req, res) {
+module.exports.remove = async function (req, res) {
     try {
-        await Expense.remove({_id: req.params.id});
+        const expense = await Expense.findById(req.params.id);
+        const wallet = await Wallets.findById(expense.wallet);
+
+        if (wallet) {
+            const updated = {budget: wallet.budget + Number(expense.expense)};
+
+            await Wallets.updateOne(
+                {_id: expense.wallet},
+                {$set: updated},
+                {new: true}
+            );
+        }
+
+        await Expense.remove({_id: expense.id});
+
         res.status(200).json({
             message: 'Expense successfully removed'
         });
