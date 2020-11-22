@@ -1,0 +1,31 @@
+@import 'variables';
+
+.history-layout {
+  .item-expense {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    margin: 0.8rem auto;
+    border-radius: $border-radius;
+    box-shadow: $primary-box-shadow;
+
+    .expense-info {
+      text-align: right;
+      margin: 0 2rem;
+      flex-grow: 1;
+
+      .expense {
+        font-size: 1.4rem;
+        color: $warn-color;
+      }
+
+      .description {
+        display: block;
+        color: $muted-color;
+        margin-top: 0.6rem;
+        font-size: 12px;
+      }
+    }
+  }
+}

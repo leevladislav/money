@@ -8,11 +8,11 @@ import {ExpensesService} from '../../../shared/services/expenses.service';
 import {Expense} from '../../../shared/interfaces/expenses.interfaces';
 
 @Component({
-  selector: 'app-history-info',
-  templateUrl: './history-info.component.html',
-  styleUrls: ['./history-info.component.scss']
+  selector: 'app-history',
+  templateUrl: './history.component.html',
+  styleUrls: ['./history.component.scss']
 })
-export class HistoryInfoComponent implements OnInit, OnDestroy {
+export class HistoryComponent implements OnInit, OnDestroy {
   category: Category;
   expenses: Expense[];
 
@@ -59,6 +59,10 @@ export class HistoryInfoComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions.push(getExpensesSub);
+  }
+
+  onDeleteExpense(expenseId): void {
+    // TODO: remove expense by expenseId
   }
 
   ngOnDestroy() {

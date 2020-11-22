@@ -5,7 +5,7 @@ import {HistoryListComponent} from './history-list/history-list.component';
 import {HistoryFilterComponent} from './history-filter/history-filter.component';
 import {SharedModule} from '../shared/shared.module';
 import {HistoryPageRoutingModule} from './history-page.routing.module';
-import {HistoryInfoComponent} from './history-list/history-info/history-info.component';
+import {HistoryComponent} from './history-list/history/history.component';
 
 
 @NgModule({
@@ -13,9 +13,8 @@ import {HistoryInfoComponent} from './history-list/history-info/history-info.com
     HistoryPageComponent,
     HistoryListComponent,
     HistoryFilterComponent,
-    HistoryInfoComponent
+    HistoryComponent
   ],
-  entryComponents: [HistoryInfoComponent],
   imports: [
     CommonModule,
     SharedModule,

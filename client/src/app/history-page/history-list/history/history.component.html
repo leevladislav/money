@@ -1,0 +1,24 @@
+<div class="heading-page-actions">
+  <app-back-btn></app-back-btn>
+</div>
+
+<p class="section-title">{{category?.name}} history</p>
+
+<div class="history-layout">
+  <div class="layout-item item-expense" *ngFor="let expense of expenses">
+    <div class="expense-direction">
+      <span class="to">{{category?.name}}</span>
+    </div>
+
+    <div class="expense-info">
+      <span class="expense">- {{expense.expense}}</span>
+      <span class="description" *ngIf="expense.description">{{expense.description}}</span>
+    </div>
+
+    <div class="expense-actions">
+      <button type="button" color="warn" mat-icon-button (click)="onDeleteExpense(expense._id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
