@@ -4,6 +4,8 @@
 
 <p class="section-title">{{category?.name}} history</p>
 
+<app-history-filter (onFilter)="onFilterHistory($event)"></app-history-filter>
+
 <div class="history-layout" *ngIf="expenses.length; else empty">
   <div class="layout-item item-expense" *ngFor="let expense of expenses" (click)="changeExpense(expense._id)">
     <span class="expense-date">{{expense?.date | date: 'dd.MM.YYYY'}}</span>

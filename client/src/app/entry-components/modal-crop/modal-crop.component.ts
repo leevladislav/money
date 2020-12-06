@@ -23,7 +23,7 @@ export class ModalCropComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.imageChangedEvent = this.data.file;
 
         if (this.data.roundCropper) {
@@ -39,20 +39,20 @@ export class ModalCropComponent implements OnInit {
         }
     }
 
-    imageCropped(event: ImageCroppedEvent) {
+    imageCropped(event: ImageCroppedEvent): void {
         this.croppedImage = event;
         this.croppedImage.file = new File([base64ToFile(event.base64)], 'ArimedAdmin.png');
     }
 
-    imageLoaded() {
+    imageLoaded(): void {
         this.showCropper = true;
     }
 
-    loadImageFailed() {
+    loadImageFailed(): void {
         this.loadFailed = 'Please, try again.';
     }
 
-    cropImage() {
+    cropImage(): void {
         this.dialogRef.close(this.croppedImage);
     }
 }

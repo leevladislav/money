@@ -34,7 +34,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initForm();
     this.getCategories();
   }
@@ -97,7 +97,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.subscriptions.push(dialogRefSub);
   }
 
-  deleteCategory(categoryId) {
+  deleteCategory(categoryId): void {
     const deleteCategorySub = this.categoriesService.delete(categoryId).subscribe(
         response => {
           this.categoriesService.categoriesUpdated$.next(true);
@@ -118,7 +118,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     reader.readAsDataURL(file);
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.form.invalid) {
       return this.form.markAllAsTouched();
     }
@@ -173,7 +173,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.subscriptions.push(updateCategorySub);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     unsubscribe(this.subscriptions);
   }
 }

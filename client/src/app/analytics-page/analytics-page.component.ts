@@ -22,7 +22,7 @@ export class AnalyticsPageComponent implements AfterViewInit, OnDestroy {
   constructor(private service: AnalyticsService) {
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     const gainConfig: any = {
       label: 'Выручка',
       color: 'rgb(255, 99, 132)'
@@ -57,7 +57,7 @@ export class AnalyticsPageComponent implements AfterViewInit, OnDestroy {
     this.subscriptions.push(getAnalyticsSub);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     unsubscribe(this.subscriptions);
   }
 }

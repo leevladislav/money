@@ -5,10 +5,11 @@ import {Category} from '../../../shared/interfaces/categories.interfaces';
 import {CategoriesService} from '../../../shared/services/categories.service';
 import {unsubscribe} from '../../../utils/unsubscriber';
 import {ExpensesService} from '../../../shared/services/expenses.service';
-import {Expense, ExpenseApiWithWallets} from '../../../shared/interfaces/expenses.interfaces';
+import {Expense, ExpenseApiWithWallets, ExpenseHistoryFilter} from '../../../shared/interfaces/expenses.interfaces';
 import {OpenModalInfoService} from '../../../shared/services/open-modal-info.service';
 import {WalletsService} from '../../../shared/services/wallets.service';
 import {RelationOfWallets} from '../../../shared/interfaces/wallets.interfaces';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-history',
@@ -20,6 +21,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   expenses: Expense[] = [];
   wallets: RelationOfWallets = {};
   categoryId: string | null = null;
+  params: ExpenseHistoryFilter = {
+    start: moment().add(-1, 'month').toDate(),
+    end: moment().endOf('day').toDate()
+  };
 
   private subscriptions: Subscription[] = [];
 
@@ -33,7 +38,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const routeSub = this.route.params.subscribe(
       (params: Params) => {
         this.categoryId = params.id;
@@ -57,7 +62,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   getExpensesByCategoryId(): void {
-    const getExpensesSub = this.expensesService.getByCategoryId(this.categoryId)
+    const getExpensesSub = this.expensesService.getByCategoryId(this.categoryId, this.params)
       .subscribe(
         (response: ExpenseApiWithWallets) => {
           this.expenses = [...response.expenses];
@@ -87,7 +92,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
     // TODO: open modal and change
   }
 
-  ngOnDestroy() {
+  onFilterHistory(filter: ExpenseHistoryFilter): void {
+    this.params = {...filter};
+
+    this.getExpensesByCategoryId();
+  }
+
+  ngOnDestroy(): void {
     unsubscribe(this.subscriptions);
   }
 }

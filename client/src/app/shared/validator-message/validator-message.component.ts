@@ -80,7 +80,7 @@ export class ValidatorMessageComponent {
     return errors;
   }
 
-  private handlePatternNames(key) {
+  private handlePatternNames(key): string {
     let str = '';
 
     switch (key) {
@@ -95,7 +95,7 @@ export class ValidatorMessageComponent {
     return str;
   }
 
-  private invalidPasswordMessage(text) {
+  private invalidPasswordMessage(text): string {
     if (!/(?=.*[a-z])/.test(text)) {
       return 'Пароль должен содержать минимум 1 строчнную букву';
     }

@@ -18,7 +18,7 @@ export class OrderPageComponent implements OnInit, OnDestroy {
   constructor(private router: Router) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.isRoot = this.router.url === '/order';
 
     const routerSub = this.router.events
@@ -31,7 +31,7 @@ export class OrderPageComponent implements OnInit, OnDestroy {
     this.subscriptions.push(routerSub);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     unsubscribe(this.subscriptions);
   }
 }

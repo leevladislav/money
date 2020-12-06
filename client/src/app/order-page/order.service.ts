@@ -9,7 +9,7 @@ export class OrderService {
   constructor() {
   }
 
-  add(position: Position) {
+  add(position: Position): void {
     const orderPosition: OrderPosition = Object.assign({}, {
       name: position.name,
       cost: position.cost,
@@ -28,19 +28,19 @@ export class OrderService {
     this.computePrice();
   }
 
-  remove(orderPosition: OrderPosition) {
+  remove(orderPosition: OrderPosition): void {
     const index = this.list.findIndex(p => p._id === orderPosition._id);
     this.list.splice(index, 1);
 
     this.computePrice();
   }
 
-  clear() {
+  clear(): void {
     this.list = [];
     this.price = 0;
   }
 
-  private computePrice() {
+  private computePrice(): void {
     this.price = this.list.reduce((total, item) => {
       return total += item.quantity * item.cost;
     }, 0);

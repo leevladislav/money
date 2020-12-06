@@ -20,7 +20,7 @@ export class BackBtnComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    back() {
+    back(): Promise<boolean | void> {
         if (this.backUrl) {
             return this.router.navigate([this.backUrl]);
         }

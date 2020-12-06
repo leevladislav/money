@@ -12,7 +12,7 @@ export class ModalInfoComponent implements OnInit {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.isArray = Array.isArray(this.data.message);
     }
 }

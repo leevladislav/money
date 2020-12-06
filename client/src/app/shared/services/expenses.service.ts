@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Message} from '../interfaces';
-import {Expense, ExpenseApiWithWallets} from '../interfaces/expenses.interfaces';
+import {Expense, ExpenseApiWithWallets, ExpenseHistoryFilter} from '../interfaces/expenses.interfaces';
+import {getObjectUrlParams} from '../../utils/filter-converter';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +19,10 @@ export class ExpensesService {
     return this.http.get<Expense[]>('/api/expense');
   }
 
-  getByCategoryId(categoryId: string): Observable<ExpenseApiWithWallets> {
-    return this.http.get<ExpenseApiWithWallets>(`/api/expense/${categoryId}`);
+  getByCategoryId(categoryId: string, filter: ExpenseHistoryFilter): Observable<ExpenseApiWithWallets> {
+    const params = getObjectUrlParams(filter);
+
+    return this.http.get<ExpenseApiWithWallets>(`/api/expense/${categoryId}`, {params});
   }
 
   create(expense: Expense): Observable<Expense> {
@@ -31,7 +34,6 @@ export class ExpensesService {
   }
 
   throwExpenses(expenses: Expense[]) {
-    console.log(expenses);
     this.expenses$.next(expenses);
   }
 }

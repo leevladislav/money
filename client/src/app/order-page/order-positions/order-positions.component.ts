@@ -24,7 +24,7 @@ export class OrderPositionsComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.positions$ = this.route.params.pipe(
       switchMap(
         (params: Params) => {
@@ -44,7 +44,7 @@ export class OrderPositionsComponent implements OnInit, OnDestroy {
     );
   }
 
-  addToOrder(position: Position) {
+  addToOrder(position: Position): void {
     this.order.add(position);
 
     this.dialog.open(ModalInfoComponent, {
@@ -57,6 +57,6 @@ export class OrderPositionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
   }
 }

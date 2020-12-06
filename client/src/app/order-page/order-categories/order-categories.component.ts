@@ -14,7 +14,7 @@ export class OrderCategoriesComponent implements OnInit {
   constructor(private categoriesService: CategoriesService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.categories$ = this.categoriesService.fetch();
   }
 }

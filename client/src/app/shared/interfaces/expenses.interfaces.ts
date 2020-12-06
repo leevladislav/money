@@ -13,3 +13,8 @@ export interface ExpenseApiWithWallets {
   expenses: Expense[];
   wallets: RelationOfWallets;
 }
+
+export interface ExpenseHistoryFilter {
+  start: Date;
+  end: Date;
+}

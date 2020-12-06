@@ -12,6 +12,27 @@ module.exports.getAll = async function (req, res) {
 };
 
 module.exports.getByCategoryId = async function (req, res) {
+    const query = {
+        user: req.user.id,
+        category: req.params.categoryId
+    };
+
+    // date start
+    if (req.query.start) {
+        query.date = {
+            $gte: req.query.start
+        }
+    }
+
+    // date end
+    if (req.query.end) {
+        if (!query.date) {
+            query.date = {}
+        }
+
+        query.date['$lte'] = req.query.end;
+    }
+
     try {
         const walletsCandidates = await Wallets.find({user: req.user.id});
 
@@ -20,10 +41,11 @@ module.exports.getByCategoryId = async function (req, res) {
             return acc;
         }, {});
 
-        const expenses = await Expense.find({
-            category: req.params.categoryId,
-            user: req.user.id
-        });
+        const expenses = await Expense
+            .find(query)
+            .sort({date: -1})
+            .skip(+req.query.offset)
+            .limit(+req.query.limit);
 
         res.status(200).json({expenses, wallets});
     } catch (e) {

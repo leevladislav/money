@@ -15,7 +15,7 @@ export class OverviewPageComponent implements OnInit {
   constructor(private service: AnalyticsService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.data$ = this.service.getOverview();
 
     this.yesterday.setDate(this.yesterday.getDate() - 1);

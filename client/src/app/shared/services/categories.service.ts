@@ -50,7 +50,7 @@ export class CategoriesService {
     return this.http.delete<Message>(`/api/category/${id}`);
   }
 
-  throwCategories(categories: Category[]) {
+  throwCategories(categories: Category[]): void {
     this.categories$.next(categories);
   }
 }

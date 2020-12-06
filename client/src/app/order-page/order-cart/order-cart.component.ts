@@ -29,10 +29,10 @@ export class OrderCartComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  removePosition(orderPosition: OrderPosition) {
+  removePosition(orderPosition: OrderPosition): void {
     const dialogRef = this.dialog.open(ModalConfirmComponent, {
       data: {
         title: 'Attention!',
@@ -49,7 +49,7 @@ export class OrderCartComponent implements OnInit, OnDestroy {
     this.subscriptions.push(dialogRefSub);
   }
 
-  submit() {
+  submit(): void {
     this.pending = true;
 
     const order: Order = {
@@ -75,7 +75,7 @@ export class OrderCartComponent implements OnInit, OnDestroy {
     this.subscriptions.push(createSub);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     unsubscribe(this.subscriptions);
   }
 }

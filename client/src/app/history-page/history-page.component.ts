@@ -1,8 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OrdersService} from '../shared/services/orders.service';
-import {Filter, Order} from '../shared/interfaces';
+import {Order} from '../shared/interfaces';
 import {Subscription} from 'rxjs';
 import {unsubscribe} from '../utils/unsubscriber';
+import {ExpenseHistoryFilter} from '../shared/interfaces/expenses.interfaces';
 
 const STEP = 4;
 
@@ -15,7 +16,7 @@ export class HistoryPageComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
   offset = 0;
   limit = STEP;
-  filter: Filter = {};
+  filter = {};
   loading = false;
   reloading = false;
   noMoreOrders = false;
@@ -25,12 +26,12 @@ export class HistoryPageComponent implements OnInit, OnDestroy {
   constructor(private ordersService: OrdersService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     // this.reloading = true;
     // this.fetch();
   }
 
-  private fetch() {
+  private fetch(): void {
     const params = Object.assign({}, this.filter, {
       offset: this.offset,
       limit: this.limit
@@ -47,13 +48,13 @@ export class HistoryPageComponent implements OnInit, OnDestroy {
     this.subscriptions.push(getOrdersSub);
   }
 
-  loadMore() {
+  loadMore(): void {
     this.offset += STEP;
     this.loading = true;
     this.fetch();
   }
 
-  applyFilter(filter: Filter) {
+  applyFilter(filter: ExpenseHistoryFilter): void {
     this.orders = [];
     this.offset = 0;
     this.filter = filter;
@@ -61,7 +62,7 @@ export class HistoryPageComponent implements OnInit, OnDestroy {
     this.fetch();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     unsubscribe(this.subscriptions);
   }
 }
