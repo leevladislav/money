@@ -10,6 +10,8 @@ import {OpenModalInfoService} from '../../../shared/services/open-modal-info.ser
 import {WalletsService} from '../../../shared/services/wallets.service';
 import {RelationOfWallets} from '../../../shared/interfaces/wallets.interfaces';
 import * as moment from 'moment';
+import {MatDialog} from '@angular/material/dialog';
+import {HistoryEditComponent} from '../../history-edit/history-edit.component';
 
 @Component({
   selector: 'app-history',
@@ -25,10 +27,12 @@ export class HistoryComponent implements OnInit, OnDestroy {
     start: moment().add(-1, 'month').toDate(),
     end: moment().endOf('day').toDate()
   };
+  expensesCount = 0;
 
   private subscriptions: Subscription[] = [];
 
   constructor(
+    private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
     private categoriesService: CategoriesService,
@@ -67,11 +71,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
         (response: ExpenseApiWithWallets) => {
           this.expenses = [...response.expenses];
           this.wallets = {...response.wallets};
+
+          this.countExpenses();
         },
         () => this.router.navigate(['history'])
       );
 
     this.subscriptions.push(getExpensesSub);
+  }
+
+  countExpenses(): void {
+    this.expensesCount = this.expenses.reduce((total, item) => total += item.expense, 0);
   }
 
   deleteExpense(expenseId: string): void {
@@ -89,7 +99,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   changeExpense(expenseId: string): void {
-    // TODO: open modal and change
+    const dialogRef = this.dialog.open(HistoryEditComponent, {
+      data: expenseId,
+      panelClass: ['primary-modal'],
+      autoFocus: false
+    });
+
+    const dialogRefSub = dialogRef.afterClosed()
+      .subscribe(() => this.getExpensesByCategoryId());
+
+    this.subscriptions.push(dialogRefSub);
   }
 
   onFilterHistory(filter: ExpenseHistoryFilter): void {

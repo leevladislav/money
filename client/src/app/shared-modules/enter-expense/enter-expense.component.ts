@@ -30,7 +30,11 @@ export class EnterExpenseComponent implements OnInit {
     });
   }
 
-  enterExpense(): void {
+  onExpenseEntered(expense: number): void {
+    console.log(expense);
+  }
+
+  addExpense(): void {
     this.modal.close({
       ...this.form.value,
       date: moment().format('DD.MM.YYYY')

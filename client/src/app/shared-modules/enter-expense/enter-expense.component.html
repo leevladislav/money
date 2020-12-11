@@ -1,7 +1,7 @@
 <app-modal-header [title]="'Enter expense'"></app-modal-header>
 
 <div class="dialog-content modal-enter-expense">
-  <form [formGroup]="form" (ngSubmit)="enterExpense()">
+  <form [formGroup]="form" (ngSubmit)="addExpense()">
     <mat-form-field>
       <input matInput placeholder="Add your expense:" formControlName="expense" required>
       <mat-error>
@@ -16,6 +16,10 @@
       </mat-error>
     </mat-form-field>
   </form>
+
+  <app-calculator [maxValue]="data.budget"
+                  (onCalculate)="onExpenseEntered($event)">
+  </app-calculator>
 
   <mat-dialog-actions align="center">
     <button mat-raised-button [mat-dialog-close]="false">

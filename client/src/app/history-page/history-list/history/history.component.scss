@@ -1,6 +1,11 @@
 @import 'variables';
 
 .history-layout {
+  .expenses-count {
+    font-size: 1.2rem;
+    margin: 1.4rem 0;
+  }
+
   .item-expense {
     display: flex;
     align-items: center;

@@ -10,13 +10,15 @@ import {ValidatorMessageComponent} from './validator-message/validator-message.c
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {CustomDateAdapter} from './custom-date-adapter';
 import {CUSTOM_FORMATS} from '../app.constants';
+import {CalculatorComponent} from './components/calculator/calculator.component';
 
 @NgModule({
   declarations: [
     BackBtnComponent,
     ModalHeaderComponent,
     LoaderComponent,
-    ValidatorMessageComponent
+    ValidatorMessageComponent,
+    CalculatorComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +40,8 @@ import {CUSTOM_FORMATS} from '../app.constants';
     ModalHeaderComponent,
     LoaderComponent,
     MaterialModule,
-    ValidatorMessageComponent
+    ValidatorMessageComponent,
+    CalculatorComponent
   ]
 })
 export class SharedModule {

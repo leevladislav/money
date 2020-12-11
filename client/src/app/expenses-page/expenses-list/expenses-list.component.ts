@@ -69,7 +69,7 @@ export class ExpensesListComponent implements OnInit, OnDestroy {
   enterExpense(selectedWallet: Wallet, selectedCategory: Category): void {
     const dialogRef = this.dialog.open(EnterExpenseComponent, {
       data: selectedWallet,
-      panelClass: ['primary-modal', 'modal-md'],
+      panelClass: ['primary-modal'],
       autoFocus: false
     });
 

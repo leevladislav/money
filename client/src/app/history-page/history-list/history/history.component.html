@@ -7,8 +7,13 @@
 <app-history-filter (onFilter)="onFilterHistory($event)"></app-history-filter>
 
 <div class="history-layout" *ngIf="expenses.length; else empty">
+
+  <div class="expenses-count">
+    <span>Total: {{expensesCount}}</span>
+  </div>
+
   <div class="layout-item item-expense" *ngFor="let expense of expenses" (click)="changeExpense(expense._id)">
-    <span class="expense-date">{{expense?.date | date: 'dd.MM.YYYY'}}</span>
+    <span class="expense-date">{{expense?.date | date: 'dd MMMM YYYY'}}</span>
 
     <div class="expense-relation">
       <span class="wallet">{{wallets[expense?.wallet]?.name}}</span>
@@ -29,5 +34,5 @@
 </div>
 
 <ng-template #empty>
-  <div class="center">Expenses history is empty</div>
+  <div class="text-center">Expenses history is empty</div>
 </ng-template>
