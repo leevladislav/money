@@ -1,14 +1,16 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
-import {of, Subscription} from 'rxjs';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CategoriesService} from '../../shared/services/categories.service';
-import {filter, switchMap} from 'rxjs/operators';
-import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
 import {MatDialog} from '@angular/material/dialog';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {of, Subscription} from 'rxjs';
+import {filter, switchMap} from 'rxjs/operators';
+
+import {CategoriesService} from '../../shared/services/categories.service';
+import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
 import {ModalConfirmComponent} from '../../entry-components/modal-confirm/modal-confirm.component';
 import {unsubscribe} from '../../utils/unsubscriber';
 import {Category, CategoryCreateParams, CategoryUpdateParams} from '../../shared/interfaces/categories.interfaces';
+import {SelectIconComponent} from '../../shared-modules/select-icon/select-icon.component';
 
 @Component({
   selector: 'app-category',
@@ -16,12 +18,10 @@ import {Category, CategoryCreateParams, CategoryUpdateParams} from '../../shared
   styleUrls: ['./category.component.scss']
 })
 export class CategoryComponent implements OnInit, OnDestroy {
-  @ViewChild('input', {static: false}) inputRef: ElementRef;
   form: FormGroup;
-  image: File;
-  imagePreview: any = '';
   isNew = true;
   category: Category;
+  iconName = 'icon-pictures';
 
   private subscriptions: Subscription[] = [];
 
@@ -63,8 +63,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
       (category: Category) => {
         if (category) {
           this.category = category;
-          this.imagePreview = category.imageSrc;
-
+          this.iconName = category.iconName;
           this.form.patchValue({name: category.name});
         }
 
@@ -76,8 +75,32 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.subscriptions.push(routeSub);
   }
 
-  triggerClick(): void {
-    this.inputRef.nativeElement.click();
+  selectIcon(): void {
+    const dialogRef = this.dialog.open(SelectIconComponent, {
+      panelClass: ['primary-modal'],
+      autoFocus: false
+    });
+
+    const dialogRefSub = dialogRef.afterClosed()
+      .subscribe((iconName: string) => {
+        if (!iconName) {
+          return;
+        }
+
+        if (this.category && this.category.iconName === iconName) {
+          return;
+        }
+
+        this.iconName = iconName;
+
+        if (this.isNew) {
+          return;
+        }
+
+        this.updateCategory(true);
+      });
+
+    this.subscriptions.push(dialogRefSub);
   }
 
   onDeleteCategory(): void {
@@ -99,23 +122,14 @@ export class CategoryComponent implements OnInit, OnDestroy {
 
   deleteCategory(categoryId): void {
     const deleteCategorySub = this.categoriesService.delete(categoryId).subscribe(
-        response => {
-          this.categoriesService.categoriesUpdated$.next(true);
-          this.openModalService.openModal(response, null, response.message, 'categories');
-        },
-        error => this.openModalService.openModal(null, error.error.message)
-      );
+      response => {
+        this.categoriesService.categoriesUpdated$.next(true);
+        this.openModalService.openModal(response, null, response.message, 'categories');
+      },
+      error => this.openModalService.openModal(null, error.error.message)
+    );
 
     this.subscriptions.push(deleteCategorySub);
-  }
-
-  onFileUpload(event: any): void {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    this.image = file;
-
-    reader.onload = () => this.imagePreview = reader.result;
-    reader.readAsDataURL(file);
   }
 
   onSubmit(): void {
@@ -124,51 +138,65 @@ export class CategoryComponent implements OnInit, OnDestroy {
     }
 
     this.form.disable();
-
     this.isNew ? this.createCategory() : this.updateCategory();
   }
 
   createCategory(): void {
     const data: CategoryCreateParams = {
       name: this.form.value.name,
-      image: this.image
+      iconName: this.iconName
     };
 
-    const createCategorySub = this.categoriesService.create(data).subscribe(
-      category => {
-        this.category = category;
-        this.form.enable();
-        this.categoriesService.categoriesUpdated$.next(true);
-        this.openModalService.openModal(category, null, 'Category successfully created', 'categories');
-      },
-      error => {
-        this.form.enable();
-        this.openModalService.openModal(null, error.error.message);
-      }
-    );
+    const createCategorySub = this.categoriesService.create(data)
+      .subscribe(
+        category => {
+          this.category = category;
+          this.form.enable();
+          this.categoriesService.categoriesUpdated$.next(true);
+          this.openModalService.openModal(
+            category,
+            null,
+            'Category successfully created',
+            'categories'
+          );
+        },
+        error => {
+          this.form.enable();
+          this.openModalService.openModal(null, error.error.message);
+        }
+      );
 
     this.subscriptions.push(createCategorySub);
   }
 
-  updateCategory(): void {
+  updateCategory(isIconUpdate = false): void {
     const data: CategoryUpdateParams = {
       id: this.category._id,
       name: this.form.value.name,
-      image: this.image
+      iconName: this.iconName
     };
 
-    const updateCategorySub = this.categoriesService.update(data).subscribe(
-      category => {
-        this.category = category;
-        this.form.enable();
-        this.categoriesService.categoriesUpdated$.next(true);
-        this.openModalService.openModal(category, null, 'Category successfully edited', 'categories');
-      },
-      error => {
-        this.form.enable();
-        this.openModalService.openModal(null, error.error.message);
-      }
-    );
+    const updateCategorySub = this.categoriesService.update(data)
+      .subscribe(
+        (category: Category) => {
+          this.category = category;
+          this.form.enable();
+          this.categoriesService.categoriesUpdated$.next(true);
+
+          if (!isIconUpdate) {
+            this.openModalService.openModal(
+              category,
+              null,
+              'Category successfully edited',
+              'categories'
+            );
+          }
+        },
+        (error) => {
+          this.form.enable();
+          this.openModalService.openModal(null, error.error.message);
+        }
+      );
 
     this.subscriptions.push(updateCategorySub);
   }

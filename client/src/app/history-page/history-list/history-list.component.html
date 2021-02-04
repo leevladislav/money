@@ -5,12 +5,8 @@
     <div *ngFor="let category of categories" class="layout-item" [routerLink]="[category._id]">
       <p class="title">{{category.name}}</p>
 
-      <div class="img-wrapper">
-        <img *ngIf="category.imageSrc; else noImage" src="{{category.imageSrc}}" alt="category">
-
-        <ng-template #noImage>
-          <img src="assets/images/category-default.jpeg" alt="category image">
-        </ng-template>
+      <div class="icon-wrapper">
+        <span class="icon {{category.iconName}}" matRipple></span>
       </div>
     </div>
   </div>

@@ -1,16 +1,4 @@
 .modal-wallets-list {
-  .cards-list {
-    .layout-item {
-      margin: 10px;
-      max-width: calc(50% - 20px);
-
-      @media screen and (max-width: 576px) {
-        margin: 6px;
-        max-width: calc(100% - 12px);
-      }
-    }
-  }
-
   .modal-add-income-layout {
     .layout-item {
       opacity: 0.6;

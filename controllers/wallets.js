@@ -35,7 +35,7 @@ module.exports.create = async function(req, res) {
         name: req.body.name,
         budget: req.body.budget,
         user: req.user.id,
-        imageSrc: req.file ? req.file.path : ''
+        iconName: req.body.iconName
     });
 
     try {
@@ -49,12 +49,9 @@ module.exports.create = async function(req, res) {
 module.exports.update = async function(req, res) {
     const updated = {
         name: req.body.name,
-        budget: req.body.budget
+        budget: req.body.budget,
+        iconName: req.body.iconName
     };
-
-    if (req.file) {
-        updated.imageSrc = req.file.path
-    }
 
     try {
         const wallet = await Wallet.findOneAndUpdate(

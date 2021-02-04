@@ -1,0 +1,90 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoon.eot?64z8ea');
+  src:  url('fonts/icomoon.eot?64z8ea#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?64z8ea') format('truetype'),
+    url('fonts/icomoon.woff?64z8ea') format('woff'),
+    url('fonts/icomoon.svg?64z8ea#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-bookmark:before {
+  content: "\e900";
+}
+.icon-clock:before {
+  content: "\e901";
+}
+.icon-cloud:before {
+  content: "\e902";
+}
+.icon-connect:before {
+  content: "\e903";
+}
+.icon-education:before {
+  content: "\e904";
+}
+.icon-facebook:before {
+  content: "\e905";
+}
+.icon-games:before {
+  content: "\e906";
+}
+.icon-girl:before {
+  content: "\e907";
+}
+.icon-home:before {
+  content: "\e908";
+}
+.icon-instagram:before {
+  content: "\e909";
+}
+.icon-light:before {
+  content: "\e90a";
+}
+.icon-lock:before {
+  content: "\e90b";
+}
+.icon-mail:before {
+  content: "\e90c";
+}
+.icon-pictures:before {
+  content: "\e90d";
+}
+.icon-repare:before {
+  content: "\e90e";
+}
+.icon-search:before {
+  content: "\e90f";
+}
+.icon-settings:before {
+  content: "\e910";
+}
+.icon-synchronize:before {
+  content: "\e911";
+}
+.icon-trash:before {
+  content: "\e912";
+}
+.icon-weather:before {
+  content: "\e913";
+}
+.icon-work:before {
+  content: "\e914";
+}

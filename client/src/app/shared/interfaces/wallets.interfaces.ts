@@ -1,20 +1,20 @@
 export interface WalletCreateParams {
   name: string;
   budget: number;
-  image?: File;
+  iconName?: string;
 }
 
 export interface WalletUpdateParams {
   id: string;
   name: string;
   budget: number;
-  image?: File;
+  iconName?: string;
 }
 
 export interface Wallet {
   name: string;
   budget: number;
-  imageSrc?: string;
+  iconName?: string;
   user?: string;
   _id?: string;
 }

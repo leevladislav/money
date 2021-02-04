@@ -13,12 +13,8 @@
 
       <p class="title">{{wallet.name}}</p>
 
-      <div class="img-wrapper">
-        <img *ngIf="wallet.imageSrc; else emptyImage" [src]="wallet.imageSrc" alt="wallet">
-
-        <ng-template #emptyImage>
-          <img src="assets/images/wallet-default.jpeg" alt="wallet image">
-        </ng-template>
+      <div class="icon-wrapper">
+        <span class="icon {{wallet?.iconName}}" matRipple></span>
       </div>
 
       <p class="budget">{{wallet.budget}}</p>

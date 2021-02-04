@@ -1,0 +1,7 @@
+<div class="icons-list">
+  <div *ngFor="let iconName of iconsNamesList"
+       class="icon-wrapper"
+       (click)="selectIcon(iconName)">
+    <span class="icon {{iconName}}" matRipple></span>
+  </div>
+</div>

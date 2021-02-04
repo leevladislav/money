@@ -42,3 +42,35 @@
     }
   }
 }
+
+.icon-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 20px 20px;
+
+  @media screen and (max-width: 768px) {
+    padding: 4px;
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 80px;
+    width: 80px;
+    overflow: hidden;
+    box-shadow: $primary-box-shadow;
+    border-radius: 50%;
+    font-size: 40px;
+
+    @media screen and (max-width: 768px) {
+      height: 60px;
+      width: 60px;
+      font-size: 24px;
+    }
+  }
+}
+

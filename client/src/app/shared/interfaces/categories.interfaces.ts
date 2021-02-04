@@ -1,17 +1,17 @@
 export interface CategoryCreateParams {
   name: string;
-  image?: File;
+  iconName: string;
 }
 
 export interface CategoryUpdateParams {
   id: string;
   name: string;
-  image?: File;
+  iconName: string;
 }
 
 export interface Category {
   name: string;
-  imageSrc?: string;
+  iconName: string;
   user?: string;
   _id?: string;
 }

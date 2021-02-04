@@ -16,6 +16,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatRippleModule} from '@angular/material/core';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
     MatRadioModule,
     MatSidenavModule,
     TextFieldModule,
-    DragDropModule
+    DragDropModule,
+    MatRippleModule
   ],
   declarations: [],
   exports: [
@@ -54,7 +56,8 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
     MatRadioModule,
     MatSidenavModule,
     TextFieldModule,
-    DragDropModule
+    DragDropModule,
+    MatRippleModule
   ]
 })
 export class MaterialModule {

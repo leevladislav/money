@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+
 import {Message} from '../interfaces';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {Category, CategoryCreateParams, CategoryUpdateParams} from '../interfaces/categories.interfaces';
@@ -23,27 +24,11 @@ export class CategoriesService {
   }
 
   create(data: CategoryCreateParams): Observable<Category> {
-    const formData = new FormData();
-
-    if (data.image) {
-      formData.append('image', data.image, data.image.name);
-    }
-
-    formData.append('name', data.name);
-
-    return this.http.post<Category>('/api/category', formData);
+    return this.http.post<Category>('/api/category', data);
   }
 
   update(data: CategoryUpdateParams): Observable<Category> {
-    const formData = new FormData();
-
-    if (data.image) {
-      formData.append('image', data.image, data.image.name);
-    }
-
-    formData.append('name', data.name);
-
-    return this.http.patch<Category>(`/api/category/${data.id}`, formData);
+    return this.http.patch<Category>(`/api/category/${data.id}`, data);
   }
 
   delete(id: string): Observable<Message> {

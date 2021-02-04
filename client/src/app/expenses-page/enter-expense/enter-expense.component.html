@@ -1,0 +1,33 @@
+<div class="heading-page-actions">
+  <app-back-btn></app-back-btn>
+</div>
+
+<p class="section-title">Add expense from {{wallet?.name}} to {{category?.name}} category</p>
+
+<div class="enter-expense">
+  <form [formGroup]="form" (ngSubmit)="onEnterExpenses()">
+    <mat-form-field>
+      <input matInput placeholder="Add your expense:" formControlName="expense" required>
+      <mat-error>
+        <app-validator-message [field]="form.get('expense')"></app-validator-message>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput placeholder="Add your note:" formControlName="description">
+      <mat-error>
+        <app-validator-message [field]="form.get('description')"></app-validator-message>
+      </mat-error>
+    </mat-form-field>
+
+    <div class="footer">
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">
+        Add
+      </button>
+    </div>
+  </form>
+
+<!--  <app-calculator [maxValue]="data.budget"-->
+<!--                  (onCalculate)="onExpenseEntered($event)">-->
+<!--  </app-calculator>-->
+</div>

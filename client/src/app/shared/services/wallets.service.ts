@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
+
 import {Wallet, WalletCreateParams, WalletUpdateParams} from '../interfaces/wallets.interfaces';
 import {Message} from '../interfaces';
 
@@ -23,29 +24,11 @@ export class WalletsService {
   }
 
   create(data: WalletCreateParams): Observable<Wallet> {
-    const formData = new FormData();
-
-    if (data.image) {
-      formData.append('image', data.image, data.image.name);
-    }
-
-    formData.append('name', data.name);
-    formData.append('budget', data.budget.toString());
-
-    return this.http.post<Wallet>('/api/wallets', formData);
+    return this.http.post<Wallet>('/api/wallets', data);
   }
 
   update(data: WalletUpdateParams): Observable<Wallet> {
-    const formData = new FormData();
-
-    if (data.image) {
-      formData.append('image', data.image, data.image.name);
-    }
-
-    formData.append('name', data.name);
-    formData.append('budget', data.budget.toString());
-
-    return this.http.patch<Wallet>(`/api/wallets/${data.id}`, formData);
+    return this.http.patch<Wallet>(`/api/wallets/${data.id}`, data);
   }
 
   addIncome(wallet: Wallet): Observable<Wallet> {

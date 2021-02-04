@@ -1,0 +1,21 @@
+<div class="heading-page-actions">
+  <app-back-btn></app-back-btn>
+</div>
+
+<p class="section-title">Select a wallet where money comes from, to {{category?.name}} category</p>
+
+<div class="cards-list">
+  <div *ngFor="let wallet of wallets"
+       [routerLink]="[wallet._id]"
+       class="layout-item"
+       [class.disabled]="wallet.budget < 1">
+
+    <p class="title">{{wallet.name}}</p>
+
+    <div class="icon-wrapper">
+      <span class="icon {{wallet.iconName}}" matRipple></span>
+    </div>
+
+    <p class="budget">{{wallet.budget}}</p>
+  </div>
+</div>

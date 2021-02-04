@@ -1,10 +1,11 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs';
+
 import {WalletsService} from '../../shared/services/wallets.service';
 import {OpenModalInfoService} from '../../shared/services/open-modal-info.service';
 import {Wallet} from '../../shared/interfaces/wallets.interfaces';
-import {Subscription} from 'rxjs';
 import {unsubscribe} from '../../utils/unsubscriber';
 
 @Component({
@@ -19,9 +20,9 @@ export class ModalAddIncomeComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private fb: FormBuilder,
     public modal: MatDialogRef<ModalAddIncomeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Wallet[],
+    private fb: FormBuilder,
     private walletsService: WalletsService,
     private openModalService: OpenModalInfoService
   ) {

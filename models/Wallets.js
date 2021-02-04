@@ -10,9 +10,10 @@ const categorySchema = new Schema({
         type: Number,
         required: true
     },
-    imageSrc: {
+    iconName: {
         type: String,
-        default: ''
+        required: true,
+        default: 'icon-home'
     },
     user: {
         ref: 'users',

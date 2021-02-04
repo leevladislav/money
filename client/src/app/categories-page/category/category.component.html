@@ -16,23 +16,12 @@
   </ng-template>
 
   <div class="body">
-    <div class="upload-wrapper">
-      <input type="file" name="file" class="input-file"
-             #input (change)="onFileUpload($event)">
+    <div class="icon-wrapper" (click)="selectIcon()">
+      <span *ngIf="isNew; else icon" class="icon {{iconName}}"></span>
 
-      <button (click)="triggerClick()" [disabled]="form.disabled"
-              type="button" mat-raised-button class="btn-upload">
-
-        <div class="img-wrapper">
-          <img *ngIf="imagePreview; else emptyImage" [src]="imagePreview" alt="wallet image">
-
-          <ng-template #emptyImage>
-            <img src="assets/images/wallet-default.jpeg" alt="wallet image">
-          </ng-template>
-        </div>
-
-        <mat-icon>edit</mat-icon>
-      </button>
+      <ng-template #icon>
+        <span class="icon {{category?.iconName}}" matRipple></span>
+      </ng-template>
     </div>
 
     <mat-form-field>
